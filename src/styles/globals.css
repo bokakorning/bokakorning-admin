@@ -12,6 +12,11 @@
   --font-mono: var(--font-geist-mono);
 }
 
+@theme inline {
+  --custom-blue: #4EB0CF;
+  --custom-sky: #4EB0CF4D;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -23,4 +28,43 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+
+.bg-custom-blue {
+  background-color: var(--custom-blue)
+}
+
+.text-custom-sky{
+  color:var(--custom-blue)
+}
+
+.bg-custom-sky {
+  background-color: var(--custom-blue)
+}
+
+.text-custom-blue{
+  color:var(--custom-blue)
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
+@variants responsive {
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+  }
 }
