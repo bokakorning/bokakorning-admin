@@ -15,12 +15,12 @@ function Bookings(props) {
   const [user, setUser] = useContext(userContext);
   const [currentPage, setCurrentPage] = useState(1);
   const [themeData, setThemeData] = useState([]);
-  const [open, setOpen] = useState(false)
-  const [popupData, setPopupData] = useState([])
+  const [open, setOpen] = useState(false);
+  const [popupData, setPopupData] = useState([]);
   const [pagination, setPagination] = useState({
     totalPages: 1,
     currentPage: 1,
-    itemsPerPage: 4,
+    itemsPerPage: 10,
   });
 
   useEffect(() => {
@@ -29,17 +29,18 @@ function Bookings(props) {
 
   const getProduct = async (page = 1, limit = 10) => {
     props.loader(true);
-    let url = `getProduct?page=${page}&limit=${limit}`;
+    let url = `booking/getschedulebookings`;
     Api("get", url, router).then(
       (res) => {
         props.loader(false);
+        console.log("abcd", res?.data);
         setInstructorList(res.data);
         setPagination(res?.pagination);
       },
       (err) => {
         props.loader(false);
         console.log(err);
-        // toast.error(err?.message || "Something went Wrong")
+        toast.error(err?.message || "Something went Wrong")
       }
     );
   };
@@ -117,7 +118,15 @@ function Bookings(props) {
     );
   };
 
-  const Registered = ({ value }) => {
+  const PickupAddress = ({ value }) => {
+
+    return (
+      <div className="p-4 flex flex-col items-center justify-center">
+        <p className="text-black text-base font-normal">{value.slice(0, 30) + "..."}</p>
+      </div>
+    );
+  };
+  const Status = ({ value }) => {
 
     return (
       <div className="p-4 flex flex-col items-center justify-center">
@@ -125,7 +134,7 @@ function Bookings(props) {
       </div>
     );
   };
-  const Availability = ({ value }) => {
+  const PaymentMode = ({ value }) => {
 
     return (
       <div className="p-4 flex flex-col items-center justify-center">
@@ -133,15 +142,7 @@ function Bookings(props) {
       </div>
     );
   };
-  const TotalLessons = ({ value }) => {
-
-    return (
-      <div className="p-4 flex flex-col items-center justify-center">
-        <p className="text-black text-base font-normal">{value}</p>
-      </div>
-    );
-  };
-  const Completed = ({ value }) => {
+  const Total = ({ value }) => {
 
     return (
       <div className="p-4 flex flex-col items-center justify-center">
@@ -169,7 +170,7 @@ function Bookings(props) {
     () => [
       {
         Header: "Booking Id",
-        accessor: "studentId",
+        accessor: "_id",
         Cell: StudentId,
       },
       {
@@ -189,28 +190,29 @@ function Bookings(props) {
       },
       {
         Header: "Pickup Location",
-        accessor: "CreatedAt",
-        Cell: Registered,
+        accessor: "pickup_address",
+        Cell: PickupAddress,
       },
-      {
-        Header: "Drop-Off Location",
-        accessor: "Document",
-        Cell: Document,
-      },
+      // {
+      //   Header: "Drop-Off Location",
+      //   accessor: "Document",
+      //   Cell: Document,
+      // },
       {
         Header: "Status",
-        accessor: "Availability",
-        Cell: Availability,
+        accessor: "status",
+        Cell: Status,
       },
       {
         Header: "Payment Status",
-        accessor: "TotalLessons",
-        Cell: TotalLessons,
+        accessor: "payment_mode",
+        Cell: PaymentMode,
+
       },
       {
-        Header: "Rating",
-        accessor: "Completed",
-        Cell: Completed,
+        Header: "Total Amount",
+        accessor: "total",
+        Cell: Total,
       },
 
       {
@@ -235,7 +237,7 @@ function Bookings(props) {
           <div className="bg-[#CFE0E54D] px-4 min-h-screen rounded-[24px]">
             <p className="text-black text-[20px] pt-4"> Booking Details</p>
             <div className="-mt-4">
-              {instructorList.length > 2 ? (
+              {instructorList.length > 0 ? (
                 <Table
                   columns={columns}
                   data={instructorList}

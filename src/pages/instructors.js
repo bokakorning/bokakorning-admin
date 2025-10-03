@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useContext } from "react";
 import Table from "../../components/table";
-import { Api } from "@/services/service";
+import { Api, ApiFormData } from "@/services/service";
 import { useRouter } from "next/router";
 import { userContext } from "./_app";
 import isAuth from "../../components/isAuth";
@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { FaEye } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { Users } from "lucide-react";
+import moment from "moment";
 
 function instructors(props) {
   const router = useRouter();
@@ -29,17 +30,18 @@ function instructors(props) {
 
   const getProduct = async (page = 1, limit = 10) => {
     props.loader(true);
-    let url = `getProduct?page=${page}&limit=${limit}`;
+    let url = `auth/getUser?type=instructer&page=${page}&limit=${limit}`;
     Api("get", url, router).then(
       (res) => {
         props.loader(false);
+        console.log("abcd", res?.data);
         setInstructorList(res.data);
         setPagination(res?.pagination);
       },
       (err) => {
         props.loader(false);
         console.log(err);
-        // toast.error(err?.message || "Something went Wrong")
+        toast.error(err?.message || "Something went Wrong")
       }
     );
   };
@@ -71,9 +73,7 @@ function instructors(props) {
       Upcoming: "20 Aug, 12:00",
       Rating: "★★★★★",
     },
-
   ];
-
 
   const StudentId = ({ value }) => {
     return (
@@ -100,7 +100,6 @@ function instructors(props) {
   };
 
   const phone = ({ value }) => {
-
     return (
       <div className="p-4 flex flex-col items-center justify-center">
         <p className="text-black text-base font-normal">{value}</p>
@@ -108,8 +107,8 @@ function instructors(props) {
     );
   };
 
-  const Document = ({ value }) => {
-
+  const Document = ({ row }) => {
+    const value = row.original.doc ? "✅" : "❌";
     return (
       <div className="p-4 flex flex-col items-center justify-center">
         <p className="text-black text-base font-normal">{value}</p>
@@ -118,31 +117,35 @@ function instructors(props) {
   };
 
   const Registered = ({ value }) => {
+    const date = value
+      ? moment(value).format("DD/MM/YYYY")
+      : "N/A";
 
     return (
       <div className="p-4 flex flex-col items-center justify-center">
-        <p className="text-black text-base font-normal">{value}</p>
+        <p className="text-black text-base font-normal">{date}</p>
       </div>
     );
   };
-  const Availability = ({ value }) => {
 
-    return (
-      <div className="p-4 flex flex-col items-center justify-center">
-        <p className="text-black text-base font-normal">{value}</p>
-      </div>
-    );
-  };
+  const Availability = ({ row }) => (
+    <div className="p-4 flex flex-col items-center justify-center">
+      <p className="text-black text-base font-normal">
+        {row?.original?.available ? "Yes" : "No"}
+      </p>
+    </div>
+  );
+
+
   const TotalLessons = ({ value }) => {
-
     return (
       <div className="p-4 flex flex-col items-center justify-center">
         <p className="text-black text-base font-normal">{value}</p>
       </div>
     );
   };
+
   const Completed = ({ value }) => {
-
     return (
       <div className="p-4 flex flex-col items-center justify-center">
         <p className="text-black text-base font-normal">{value}</p>
@@ -150,16 +153,90 @@ function instructors(props) {
     );
   };
 
+  const RatePerHour = ({ row }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [rate, setRate] = useState(row?.original?.rate_per_hour || "");
+
+    const handleSave = async () => {
+      try {
+        const res = await Api(
+          "post",
+          "auth/updateInstRate",
+          { instructer_id: row?.original?._id, rate_per_hour: rate },
+          router
+        );
+
+        if (res?.status) {
+          setIsOpen(false);
+          getProduct(currentPage);
+          toast.success("Rate updated successfully");
+        }
+      } catch (err) {
+        console.error("Error updating rate:", err);
+        toast.error("Failed to update rate");
+      }
+    };
+
+
+    return (
+      <div className="p-4 flex flex-col items-center justify-center">
+        {row?.original?.rate_per_hour ? (
+          <p className="text-black text-base font-normal">
+            ${row.original.rate_per_hour}
+          </p>
+        ) : (
+          <>
+            <button
+              onClick={() => setIsOpen(true)}
+              className="px-3 py-1 underline text-black cursor-pointer rounded"
+            >
+              Set Rate
+            </button>
+
+            {/* Modal */}
+            {isOpen && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black/20 bg-opacity-40">
+                <div className="bg-white p-6 rounded shadow-lg w-80">
+                  <h2 className="text-lg font-semibold mb-4">Set Rate per Hour</h2>
+                  <input
+                    type="number"
+                    value={rate}
+                    onChange={(e) => setRate(e.target.value)}
+                    className="w-full border p-2 rounded mb-4"
+                    placeholder="Enter rate"
+                  />
+                  <div className="flex justify-end gap-2">
+                    <button
+                      onClick={() => setIsOpen(false)}
+                      className="px-3 py-2 bg-gray-300 rounded"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleSave}
+                      className="px-3 py-2 bg-custom-sky text-white rounded"
+                    >
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    );
+  };
 
   const actionHandler = ({ row }) => {
     return (
-      <div className="flex  text-black items-center justify-evenly py-2 rounded-[10px] mr-[10px]"
+      <div className="flex  cursor-pointer text-black items-center justify-evenly py-2 rounded-[10px] mr-[10px]"
         onClick={() => {
           setPopupData(row.original)
           setOpen(true)
         }}
       >
-        <button className="underline"> View  </button>
+        <button className="underline cursor-pointer"> View  </button>
         <FaEye />
       </div>
     );
@@ -189,29 +266,29 @@ function instructors(props) {
       },
       {
         Header: "Registered On",
-        accessor: "CreatedAt",
+        accessor: "createdAt",
         Cell: Registered,
       },
       {
-        Header: "Document",
-        accessor: "Document",
-        Cell: Document,
+        Header: "Rate Per Hour",
+        // accessor: "Document",
+        Cell: RatePerHour,
       },
       {
         Header: "Availability",
-        accessor: "Availability",
+        // accessor: "available",
         Cell: Availability,
       },
-      {
-        Header: "TotalLessons",
-        accessor: "TotalLessons",
-        Cell: TotalLessons,
-      },
-      {
-        Header: "Completed",
-        accessor: "Completed",
-        Cell: Completed,
-      },
+      // {
+      //   Header: "TotalLessons",
+      //   accessor: "TotalLessons",
+      //   Cell: TotalLessons,
+      // },
+      // {
+      //   Header: "Completed",
+      //   accessor: "Completed",
+      //   Cell: Completed,
+      // },
 
       {
         Header: "ACTION",
@@ -233,10 +310,10 @@ function instructors(props) {
           <div className="bg-[#CFE0E54D] px-4 min-h-screen rounded-[24px]">
             <p className="text-black text-[20px] pt-6"> Instructor Details</p>
             <div className="-mt-4">
-              {students.length > 0 ? (
+              {instructorList.length > 0 ? (
                 <Table
                   columns={columns}
-                  data={students}
+                  data={instructorList}
                   pagination={pagination}
                   onPageChange={(page) => setCurrentPage(page)}
                   currentPage={currentPage}
@@ -262,20 +339,20 @@ function instructors(props) {
                   <div className="flex items-center space-x-4">
                     <div className="w-16 h-16 rounded-full overflow-hidden">
                       <img
-                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
+                        src={popupData?.image || "/person.png"}
                         alt="Student Profile"
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div>
-                      <h2 className="text-xl font-semibold text-gray-800">{popupData.name}</h2>
-                      <p className="text-gray-600">{popupData.email}</p>
-                      <p className="text-gray-500 text-sm">{popupData.phone}</p>
+                      <h2 className="text-xl font-semibold text-gray-800">{popupData?.name}</h2>
+                      <p className="text-gray-600">{popupData?.email}</p>
+                      <p className="text-gray-500 text-sm">{popupData?.phone}</p>
                     </div>
                   </div>
-                  <div className="text-right">
+                  {/* <div className="text-right">
                     <p className="text-gray-600 text-sm">Date Of Birth: 01-01-1990</p>
-                  </div>
+                  </div> */}
                 </div>
                 <p
                   onClick={() => setOpen(false)}
@@ -285,14 +362,17 @@ function instructors(props) {
 
 
               <div className="p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 divide ">
+                <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 divide ">
 
                   <div className="space-y-4">
                     <div className="flex">
                       <span className="font-medium text-gray-700 w-32">Student ID:</span>
                       <span className="text-gray-600">{popupData.studentId}</span>
                     </div>
-
+                    <div className="flex">
+                      <span className="font-medium text-gray-700 w-32">About us:</span>
+                      <span className="text-gray-600">{popupData.bio}</span>
+                    </div>
                     <div className="flex">
                       <span className="font-medium text-gray-700 w-32">Student Name:</span>
                       <span className="text-gray-600">{popupData.name}</span>
@@ -310,20 +390,22 @@ function instructors(props) {
 
                     <div className="flex">
                       <span className="font-medium text-gray-700 w-32">Registered On:</span>
-                      <span className="text-gray-600">{popupData.CreatedAt}</span>
+                      <span className="text-gray-600">
+                        {popupData?.createdAt ? moment(popupData?.createdAt).format("DD/MM/YYYY") : ""}
+                      </span>
                     </div>
 
                     <div className="flex">
                       <span className="font-medium text-gray-700 w-32">Availability:</span>
-                      <span className="text-gray-600">{popupData.Availability}</span>
+                      <span className="text-gray-600">{popupData?.available ? "Yes" : "No"}</span>
                     </div>
 
                     <div className="flex">
-                      <span className="font-medium text-gray-700 w-32">Total Lesson:</span>
-                      <span className="text-gray-600">{popupData.TotalLessons}</span>
+                      <span className="font-medium text-gray-700 w-32">Vehicle Model:</span>
+                      <span className="text-gray-600">{popupData.vehicle_model}</span>
                     </div>
 
-                    <div className="flex">
+                    {/* <div className="flex">
                       <span className="font-medium text-gray-700 w-32">Completed Lesson:</span>
                       <span className="text-gray-600">{popupData.Completed}</span>
                     </div>
@@ -336,20 +418,20 @@ function instructors(props) {
                     <div className="flex">
                       <span className="font-medium text-gray-700 w-32">Rating:</span>
                       <span className="text-yellow-500">★★★★★</span>
-                    </div>
+                    </div>  */}
                   </div>
 
                   <div className="flex flex-col justify-center">
 
-                    <div className=" rounded-lg w-full ">
+                    {/* <div className=" rounded-lg w-full ">
                       <div className="shadow-sm overflow-hidden">
                         <img src="https://images.unsplash.com/photo-1562240020-ce31ccb0fa7d?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                          className="h-[33rem]"
+                          className="h-[30rem]"
                         />
                       </div>
-                    </div>
+                    </div> */}
 
-                    <div className=" py-4 border-t border-gray-200">
+                    {/* <div className=" py-4 border-t border-gray-200">
                       <div className="flex space-x-4 justify-center w-full">
                         <button className="bg-[#4EB0CFD9] w-1/2 text-white px-6 py-2 rounded-lg transition-colors duration-200 ">
                           Approve
@@ -358,7 +440,7 @@ function instructors(props) {
                           Reject
                         </button>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>

@@ -11,10 +11,11 @@ import { toast } from "react-toastify";
 import { FaEye } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { Users } from "lucide-react";
+import moment from "moment";
 
 function students(props) {
   const router = useRouter();
-  const [instructorList, setInstructorList] = useState([]);
+  const [studentList, setStudentList] = useState([]);
   const [user, setUser] = useContext(userContext);
   const [currentPage, setCurrentPage] = useState(1);
   const [themeData, setThemeData] = useState([]);
@@ -32,50 +33,20 @@ function students(props) {
 
   const getProduct = async (page = 1, limit = 10) => {
     props.loader(true);
-    let url = `getProduct?page=${page}&limit=${limit}`;
+    let url = `auth/getUser?type=user&page=${page}&limit=${limit}`;
     Api("get", url, router).then(
       (res) => {
         props.loader(false);
-        setInstructorList(res.data);
+        setStudentList(res.data);
         setPagination(res?.pagination);
       },
       (err) => {
         props.loader(false);
         console.log(err);
-        // toast.error(err?.message || "Something went Wrong")
+        toast.error(err?.message || "Something went Wrong")
       }
     );
   };
-
-  const students = [
-    {
-      studentId: "IN-502",
-      name: "Jonas",
-      email: "jonas@email.com",
-      phone: "+46 73 123 45 67",
-      CreatedAt: "12th, August 2025",
-      Document: "✅",
-      Availability: "Online",
-      TotalLessons: 15,
-      Completed: 12,
-      Upcoming: "20 Aug, 14:00",
-      Rating: "★★★★★",
-    },
-    {
-      studentId: "IN-503",
-      name: "Ron",
-      email: "ron@email.com",
-      phone: "+46 12 562 23 97",
-      CreatedAt: "9th, August 2025",
-      Document: "✅",
-      Availability: "Offline",
-      TotalLessons: 8,
-      Completed: 5,
-      Upcoming: "20 Aug, 12:00",
-      Rating: "★★★★★",
-    },
-
-  ];
 
 
   const StudentId = ({ value }) => {
@@ -111,23 +82,45 @@ function students(props) {
     );
   };
 
-  const Document = ({ value }) => {
-
+  const Document = ({ row }) => {
+    const value = row.original.doc ? "✅" : "❌";
     return (
       <div className="p-4 flex flex-col items-center justify-center">
         <p className="text-black text-base font-normal">{value}</p>
+      </div>
+    );
+  };
+
+  const Status = ({ value }) => {
+    let display = "";
+
+    if (value === "Pending") {
+      display = "Pending";
+    } else if (value === "Approved") {
+      display = "Approved";
+    } else if (value === "Rejected") {
+      display = "Rejected";
+    }
+
+    return (
+      <div className="p-4 flex flex-col items-center justify-center">
+        <p className="text-black text-base font-normal">{display}</p>
       </div>
     );
   };
 
   const Registered = ({ value }) => {
+    const date = value
+      ? moment(value).format("DD/MM/YYYY")
+      : "N/A";
 
     return (
       <div className="p-4 flex flex-col items-center justify-center">
-        <p className="text-black text-base font-normal">{value}</p>
+        <p className="text-black text-base font-normal">{date}</p>
       </div>
     );
   };
+
   const Availability = ({ value }) => {
 
     return (
@@ -156,13 +149,13 @@ function students(props) {
 
   const actionHandler = ({ row }) => {
     return (
-      <div className="flex  text-black items-center justify-evenly py-2 rounded-[10px] mr-[10px]"
+      <div className="flex cursor-pointer text-black items-center justify-evenly py-2 rounded-[10px] mr-[10px]"
         onClick={() => {
           setPopupData(row.original)
           setOpen(true)
         }}
       >
-        <button className="underline"> View  </button>
+        <button className="underline cursor-pointer"> View  </button>
         <FaEye />
       </div>
     );
@@ -192,29 +185,34 @@ function students(props) {
       },
       {
         Header: "Registered On",
-        accessor: "CreatedAt",
+        accessor: "createdAt",
         Cell: Registered,
       },
       {
         Header: "Document",
-        accessor: "Document",
+        // accessor: "Document",
         Cell: Document,
       },
       {
-        Header: "Availability",
-        accessor: "Availability",
-        Cell: Availability,
+        Header: "Status",
+        accessor: "status",
+        Cell: Status,
       },
-      {
-        Header: "TotalLessons",
-        accessor: "TotalLessons",
-        Cell: TotalLessons,
-      },
-      {
-        Header: "Completed",
-        accessor: "Completed",
-        Cell: Completed,
-      },
+      // {
+      //   Header: "Availability",
+      //   accessor: "Availability",
+      //   Cell: Availability,
+      // },
+      // {
+      //   Header: "TotalLessons",
+      //   accessor: "TotalLessons",
+      //   Cell: TotalLessons,
+      // },
+      // {
+      //   Header: "Completed",
+      //   accessor: "Completed",
+      //   Cell: Completed,
+      // },
 
       {
         Header: "ACTION",
@@ -236,10 +234,10 @@ function students(props) {
           <div className="bg-[#CFE0E54D] px-4 min-h-screen rounded-[24px]">
             <p className="text-black text-[20px] pt-6"> Student Details</p>
             <div className="-mt-4">
-              {students.length > 0 ? (
+              {studentList.length > 0 ? (
                 <Table
                   columns={columns}
-                  data={students}
+                  data={studentList}
                   pagination={pagination}
                   onPageChange={(page) => setCurrentPage(page)}
                   currentPage={currentPage}
@@ -265,7 +263,7 @@ function students(props) {
                   <div className="flex items-center space-x-4">
                     <div className="w-16 h-16 rounded-full overflow-hidden">
                       <img
-                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
+                        src={popupData?.image || "/person.png"}
                         alt="Student Profile"
                         className="w-full h-full object-cover"
                       />
@@ -276,13 +274,13 @@ function students(props) {
                       <p className="text-gray-500 text-sm">{popupData.phone}</p>
                     </div>
                   </div>
-                  <div className="text-right">
+                  {/* <div className="text-right">
                     <p className="text-gray-600 text-sm">Date Of Birth: 01-01-1990</p>
-                  </div>
+                  </div> */}
                 </div>
                 <p
                   onClick={() => setOpen(false)}
-                  className="text-black text-2xl absolute right-4 top-2"
+                  className="text-black text-2xl absolute cursor-pointer right-4 top-2"
                 > <RxCross2 /></p>
               </div>
 
@@ -313,15 +311,18 @@ function students(props) {
 
                     <div className="flex">
                       <span className="font-medium text-gray-700 w-32">Registered On:</span>
-                      <span className="text-gray-600">{popupData.CreatedAt}</span>
+                      <span className="text-gray-600">
+                        {popupData?.createdAt ? moment(popupData?.createdAt).format("DD/MM/YYYY") : ""}
+                      </span>
+
                     </div>
 
-                    <div className="flex">
+                    {/* <div className="flex">
                       <span className="font-medium text-gray-700 w-32">Availability:</span>
                       <span className="text-gray-600">{popupData.Availability}</span>
-                    </div>
+                    </div> */}
 
-                    <div className="flex">
+                    {/* <div className="flex">
                       <span className="font-medium text-gray-700 w-32">Total Lesson:</span>
                       <span className="text-gray-600">{popupData.TotalLessons}</span>
                     </div>
@@ -329,9 +330,9 @@ function students(props) {
                     <div className="flex">
                       <span className="font-medium text-gray-700 w-32">Completed Lesson:</span>
                       <span className="text-gray-600">{popupData.Completed}</span>
-                    </div>
+                    </div> */}
 
-                    <div className="flex">
+                    {/* <div className="flex">
                       <span className="font-medium text-gray-700 w-32">Upcoming:</span>
                       <span className="text-gray-600">12th, August 2025</span>
                     </div>
@@ -339,29 +340,29 @@ function students(props) {
                     <div className="flex">
                       <span className="font-medium text-gray-700 w-32">Rating:</span>
                       <span className="text-yellow-500">★★★★★</span>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="flex flex-col justify-center">
 
                     <div className=" rounded-lg w-full ">
                       <div className="shadow-sm overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1562240020-ce31ccb0fa7d?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                          className="h-[33rem]"
+                        <img src={popupData?.doc || "https://via.placeholder.com/400x300?text=No+Image"}
+                          className="h-[30rem]"
                         />
                       </div>
                     </div>
 
-                    <div className=" py-4 border-t border-gray-200">
+                    {/* <div className=" py-4 border-t border-gray-200">
                       <div className="flex space-x-4 justify-center w-full">
-                        <button className="bg-[#4EB0CFD9] w-1/2 text-white px-6 py-2 rounded-lg transition-colors duration-200 ">
+                        <button className="bg-[#4EB0CFD9] w-1/2 text-white px-6 py-2 rounded-lg transition-colors duration-200 cursor-pointer">
                           Approve
                         </button>
-                        <button className="bg-[#FF6C6C] w-1/2 text-white px-6 py-2 rounded-lg transition-colors duration-200">
+                        <button className="bg-[#FF6C6C] w-1/2 text-white px-6 py-2 rounded-lg transition-colors duration-200 cursor-pointer">
                           Reject
                         </button>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
