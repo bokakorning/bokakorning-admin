@@ -311,11 +311,11 @@ const AboutUs = () => {
         <div className="container mx-auto px-4 text-center">
           <div className="flex flex-wrap justify-center gap-6 text-md">
 
-            <Link href="/PrivacyPolicy" className=" transition-colors duration-300">
+            <Link href="/privacypolicy" className=" transition-colors duration-300">
               Privacy Policy
             </Link>
             <span>|</span>
-            <Link href="/TermsandConditions" className=" transition-colors duration-300">
+            <Link href="/termsandconditions" className=" transition-colors duration-300">
               Terms & Conditions
             </Link>
           </div>

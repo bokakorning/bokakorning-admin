@@ -2,12 +2,12 @@ import axios from "axios";
 // const ConstantsUrl = "http://localhost:3004/";
 const ConstantsUrl = "https://api.bokakorning.online/";
 
-// Public routes jahan auth skip hoga
+
 const publicRoutes = ["/aboutus", "/privacypolicy", "/termsandconditions"];
 
 function handleAuthError(err, router) {
   if (typeof window !== "undefined") {
-    const currentPath = router.asPath.toLowerCase();
+    const currentPath = router.pathname.toLowerCase();
     if (!publicRoutes.includes(currentPath)) {
       console.warn("Auth error:", err?.response?.data?.message || err.message);
       localStorage.removeItem("token");
