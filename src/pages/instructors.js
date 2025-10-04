@@ -326,15 +326,15 @@ function instructors(props) {
 
   console.log(open)
   return (
-    <div className="w-full h-full bg-transparent mt-5  md:px-8 px-4">
+    <div className="w-full h-full bg-transparent mt-5 md:px-8 px-4">
       <div className=" h-full">
         <p className="text-black font-bold md:text-[46px] text-2xl cursor-pointer">
           <span className="w-2 h-8 bg-[#F38529] rounded "></span>
           Instructor
         </p>
-        <div className="bg-white md:pb-32 px-1 rounded-[12px] h-full overflow-y-scroll scrollbar-hide overflow-scroll pb-28 mt-3">
+        <div className="bg-white md:pb-22 px-1 rounded-[12px] h-full overflow-y-scroll scrollbar-hide overflow-scroll pb-14 mt-3">
           <div className="bg-[#CFE0E54D] px-4 min-h-screen rounded-[24px]">
-            <p className="text-black text-[20px] pt-6"> Instructor Details</p>
+            <p className="text-black text-[20px] pt-6">Instructor Details</p>
             <div className="-mt-4">
               {instructorList.length > 0 ? (
                 <Table
@@ -392,10 +392,6 @@ function instructors(props) {
 
                   <div className="space-y-4">
                     <div className="flex">
-                      <span className="font-medium text-gray-700 w-32">Student ID:</span>
-                      <span className="text-gray-600">{popupData.studentId}</span>
-                    </div>
-                    <div className="flex">
                       <span className="font-medium text-gray-700 w-32">About us:</span>
                       <span className="text-gray-600">{popupData.bio}</span>
                     </div>
@@ -448,25 +444,6 @@ function instructors(props) {
                   </div>
 
                   <div className="flex flex-col justify-center">
-
-                    {/* <div className=" rounded-lg w-full ">
-                      <div className="shadow-sm overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1562240020-ce31ccb0fa7d?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                          className="h-[30rem]"
-                        />
-                      </div>
-                    </div> */}
-
-                    {/* <div className=" py-4 border-t border-gray-200">
-                      <div className="flex space-x-4 justify-center w-full">
-                        <button className="bg-[#4EB0CFD9] w-1/2 text-white px-6 py-2 rounded-lg transition-colors duration-200 ">
-                          Approve
-                        </button>
-                        <button className="bg-[#FF6C6C] w-1/2 text-white px-6 py-2 rounded-lg transition-colors duration-200">
-                          Reject
-                        </button>
-                      </div>
-                    </div> */}
                   </div>
                 </div>
               </div>

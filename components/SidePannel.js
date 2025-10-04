@@ -139,8 +139,8 @@ const SidePannel = ({ setOpenTab, openTab }) => {
               <div className="flex">
                 <div className="w-12 h-12 rounded-full overflow-hidden border-white border">
                   <img
-                    src={user?.profile || "/office-man.png"}
-                    alt="Profile"
+                    src={user?.image || "/userprofile.png"}
+                    alt="image"
                     className="w-full h-full object-cover"
                     onError={imageOnError}
                   />

@@ -201,7 +201,7 @@ function students(props) {
           <span className="w-2 h-8 bg-[#F38529] rounded "></span>
           Students
         </p>
-        <div className="bg-white md:pb-32 px-1 rounded-[12px] h-full overflow-y-scroll scrollbar-hide overflow-scroll pb-28 md:mt-5 mt-5">
+        <div className="bg-white md:pb-22 px-1 rounded-[12px] h-full overflow-y-scroll scrollbar-hide overflow-scroll pb-18 md:mt-5 mt-5">
           <div className="bg-[#CFE0E54D] px-4 min-h-screen rounded-[24px]">
             <p className="text-black text-[20px] pt-6"> Student Details</p>
             <div className="-mt-4">
