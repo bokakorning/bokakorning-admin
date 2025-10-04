@@ -7,9 +7,11 @@ const isAuth = (Component) => {
     const [auth, setAuth] = useState(null);
 
     const publicRoutes = ["/aboutus", "/privacypolicy", "/termsandconditions"];
+    const currentPath = router.pathname.toLowerCase();
+    const isPublic = publicRoutes.includes(currentPath);
 
-    const currentPath = router.asPath.toLowerCase();
-    const isPublic = publicRoutes.some((route) => route === currentPath);
+    // ✅ Public page short-circuit
+    if (isPublic) return <Component {...props} />;
 
     useEffect(() => {
       if (typeof window !== "undefined") {
@@ -23,7 +25,7 @@ const isAuth = (Component) => {
           setAuth(false);
         }
       }
-    }, [isPublic]);
+    }, []);
 
     useEffect(() => {
       if (auth === false) {
@@ -31,6 +33,9 @@ const isAuth = (Component) => {
         router.replace("/login");
       }
     }, [auth]);
+
+    // ✅ Render only if auth is true
+    if (auth === null) return null;
 
     return <Component {...props} />;
   };
