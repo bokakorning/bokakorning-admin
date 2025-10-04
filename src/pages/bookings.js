@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 import { FaEye } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { Users } from "lucide-react";
+import moment from "moment";
+import constant from "@/services/constant";
 
 function Bookings(props) {
   const router = useRouter();
@@ -27,9 +29,9 @@ function Bookings(props) {
     getProduct(currentPage);
   }, [user, currentPage]);
 
-  const getProduct = async (page = 1, limit = 10) => {
+  const getProduct = async () => {
     props.loader(true);
-    let url = `booking/getschedulebookings`;
+    let url = `booking/getAllBookings?page=1&limit=20`;
     Api("get", url, router).then(
       (res) => {
         props.loader(false);
@@ -45,44 +47,6 @@ function Bookings(props) {
     );
   };
 
-  // const students = [
-  //   {
-  //     studentId: "IN-502",
-  //     name: "Jonas",
-  //     email: "jonas@email.com",
-  //     phone: "+46 73 123 45 67",
-  //     CreatedAt: "12th, August 2025",
-  //     Document: "✅",
-  //     Availability: "Online",
-  //     TotalLessons: 15,
-  //     Completed: 12,
-  //     Upcoming: "20 Aug, 14:00",
-  //     Rating: "★★★★★",
-  //   },
-  //   {
-  //     studentId: "IN-503",
-  //     name: "Ron",
-  //     email: "ron@email.com",
-  //     phone: "+46 12 562 23 97",
-  //     CreatedAt: "9th, August 2025",
-  //     Document: "✅",
-  //     Availability: "Offline",
-  //     TotalLessons: 8,
-  //     Completed: 5,
-  //     Upcoming: "20 Aug, 12:00",
-  //     Rating: "★★★★★",
-  //   },
-
-  // ];
-
-
-  const StudentId = ({ value }) => {
-    return (
-      <div className="p-4 flex flex-col items-center justify-center">
-        <p className="text-black text-base font-normal">{value || "N/A"}</p>
-      </div>
-    );
-  };
 
   const StudentName = ({ value }) => {
     return (
@@ -100,32 +64,17 @@ function Bookings(props) {
     );
   };
 
-  const phone = ({ value }) => {
 
-    return (
-      <div className="p-4 flex flex-col items-center justify-center">
-        <p className="text-black text-base font-normal">{value}</p>
-      </div>
-    );
-  };
-
-  const Document = ({ value }) => {
-
-    return (
-      <div className="p-4 flex flex-col items-center justify-center">
-        <p className="text-black text-base font-normal">{value}</p>
-      </div>
-    );
-  };
 
   const PickupAddress = ({ value }) => {
 
     return (
       <div className="p-4 flex flex-col items-center justify-center">
-        <p className="text-black text-base font-normal">{value.slice(0, 30) + "..."}</p>
+        <p className="text-black text-base font-normal">{value?.slice(0, 30) + "..."}</p>
       </div>
     );
   };
+
   const Status = ({ value }) => {
 
     return (
@@ -134,6 +83,16 @@ function Bookings(props) {
       </div>
     );
   };
+
+  const SessionId = ({ value }) => {
+
+    return (
+      <div className="p-4 flex flex-col items-center justify-center">
+        <p className="text-black text-base font-normal">{value || "N/A"}</p>
+      </div>
+    );
+  };
+
   const PaymentMode = ({ value }) => {
 
     return (
@@ -142,15 +101,30 @@ function Bookings(props) {
       </div>
     );
   };
-  const Total = ({ value }) => {
 
+  const Total = ({ value }) => {
+    return (
+      <div className="p-4 flex flex-col items-center justify-center">
+        {value ? (
+          <p className="text-black text-base font-normal">
+            {constant?.currency} {value}
+          </p>
+        ) : (
+          <p className="text-gray-400 text-base font-normal">N/A</p>
+        )}
+      </div>
+    );
+  };
+
+  const SheduleDateTime = ({ row }) => {
+    const date = moment(row.original.sheduleDate).format("DD/MM/YYYY")
+    const value = date + " " + row.original.selectedTime;
     return (
       <div className="p-4 flex flex-col items-center justify-center">
         <p className="text-black text-base font-normal">{value}</p>
       </div>
     );
   };
-
 
   const actionHandler = ({ row }) => {
     return (
@@ -169,46 +143,41 @@ function Bookings(props) {
   const columns = useMemo(
     () => [
       {
-        Header: "Booking Id",
-        accessor: "_id",
-        Cell: StudentId,
+        Header: "Session Id",
+        accessor: "session_id",
+        Cell: SessionId,
       },
       {
         Header: "Student Name",
-        accessor: "name",
+        accessor: "user.name",
         Cell: StudentName,
       },
       {
         Header: "Instructor Name",
-        accessor: "email",
+        accessor: "instructer.name",
         Cell: Email,
       },
       {
-        Header: "Lesson Date & Time",
-        accessor: "phone",
-        Cell: phone,
+        Header: "Shedule Date & Time",
+        // accessor: "phone",
+        Cell: SheduleDateTime,
       },
       {
         Header: "Pickup Location",
         accessor: "pickup_address",
         Cell: PickupAddress,
       },
-      // {
-      //   Header: "Drop-Off Location",
-      //   accessor: "Document",
-      //   Cell: Document,
-      // },
+
       {
         Header: "Status",
         accessor: "status",
         Cell: Status,
       },
-      {
-        Header: "Payment Status",
-        accessor: "payment_mode",
-        Cell: PaymentMode,
-
-      },
+      // {
+      //   Header: "Payment Status",
+      //   accessor: "payment_mode",
+      //   Cell: PaymentMode,
+      // },
       {
         Header: "Total Amount",
         accessor: "total",
@@ -266,20 +235,18 @@ function Bookings(props) {
                   <div className="flex items-center space-x-4">
                     <div className="w-16 h-16 rounded-full overflow-hidden">
                       <img
-                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
+                        src={popupData?.user?.image || "/person.png"}
                         alt="Student Profile"
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div>
-                      <h2 className="text-xl font-semibold text-gray-800">{popupData.name}</h2>
-                      <p className="text-gray-600">{popupData.email}</p>
-                      <p className="text-gray-500 text-sm">{popupData.phone}</p>
+                      <h2 className="text-xl font-semibold text-gray-800">{popupData?.user?.name}</h2>
+                      <p className="text-gray-600">{popupData?.user?.email}</p>
+                      <p className="text-gray-500 text-sm">{popupData?.user?.phone}</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-gray-600 text-sm">Date Of Birth: 01-01-1990</p>
-                  </div>
+
                 </div>
                 <p
                   onClick={() => setOpen(false)}
@@ -289,81 +256,45 @@ function Bookings(props) {
 
 
               <div className="p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 divide ">
+                <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 divide ">
 
                   <div className="space-y-4">
                     <div className="flex">
                       <span className="font-medium text-gray-700 w-32">Student ID:</span>
-                      <span className="text-gray-600">{popupData.studentId}</span>
+                      <span className="text-gray-600">{popupData.user?._id}</span>
                     </div>
 
                     <div className="flex">
-                      <span className="font-medium text-gray-700 w-32">Student Name:</span>
-                      <span className="text-gray-600">{popupData.name}</span>
+                      <span className="font-medium text-gray-700 w-32">Shedule Date & Time:</span>
+                      <span className="text-gray-600">
+                        {`${moment(popupData.sheduleDate).format("DD/MM/YYYY")} ${moment(popupData.selectedTime, "HH:mm").format("hh:mm A")}`}
+                      </span>
+                    </div>
+                    <div className="flex">
+                      <span className="font-medium text-gray-700 w-32">Pickup Address:</span>
+                      <span className="text-gray-600">{popupData.pickup_address}</span>
                     </div>
 
                     <div className="flex">
-                      <span className="font-medium text-gray-700 w-32">Email:</span>
-                      <span className="text-gray-600">{popupData.email}</span>
+                      <span className="font-medium text-gray-700 w-32">Payment Mode:</span>
+                      <span className="text-gray-600">{popupData.payment_mode}</span>
                     </div>
-
                     <div className="flex">
-                      <span className="font-medium text-gray-700 w-32">Phone No:</span>
-                      <span className="text-gray-600">{popupData.phone}</span>
+                      <span className="font-medium text-gray-700 w-32">Status:</span>
+                      <span className="text-gray-600">{popupData.status}</span>
                     </div>
 
                     <div className="flex">
                       <span className="font-medium text-gray-700 w-32">Registered On:</span>
-                      <span className="text-gray-600">{popupData.CreatedAt}</span>
+                      <span className="text-gray-600">
+                        {popupData?.user?.createdAt ? moment(popupData?.user?.createdAt).format("DD/MM/YYYY") : ""}
+                      </span>
+
                     </div>
 
-                    <div className="flex">
-                      <span className="font-medium text-gray-700 w-32">Availability:</span>
-                      <span className="text-gray-600">{popupData.Availability}</span>
-                    </div>
-
-                    <div className="flex">
-                      <span className="font-medium text-gray-700 w-32">Total Lesson:</span>
-                      <span className="text-gray-600">{popupData.TotalLessons}</span>
-                    </div>
-
-                    <div className="flex">
-                      <span className="font-medium text-gray-700 w-32">Completed Lesson:</span>
-                      <span className="text-gray-600">{popupData.Completed}</span>
-                    </div>
-
-                    <div className="flex">
-                      <span className="font-medium text-gray-700 w-32">Upcoming:</span>
-                      <span className="text-gray-600">12th, August 2025</span>
-                    </div>
-
-                    <div className="flex">
-                      <span className="font-medium text-gray-700 w-32">Rating:</span>
-                      <span className="text-yellow-500">★★★★★</span>
-                    </div>
                   </div>
 
-                  <div className="flex flex-col justify-center">
 
-                    <div className=" rounded-lg w-full ">
-                      <div className="shadow-sm overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1562240020-ce31ccb0fa7d?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                          className="h-[33rem]"
-                        />
-                      </div>
-                    </div>
-
-                    <div className=" py-4 border-t border-gray-200">
-                      <div className="flex space-x-4 justify-center w-full">
-                        <button className="bg-[#4EB0CFD9] w-1/2 text-white px-6 py-2 rounded-lg transition-colors duration-200 ">
-                          Approve
-                        </button>
-                        <button className="bg-[#FF6C6C] w-1/2 text-white px-6 py-2 rounded-lg transition-colors duration-200">
-                          Reject
-                        </button>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
 

@@ -5,7 +5,7 @@ import { MdDashboard } from "react-icons/md";
 import { ImCross } from "react-icons/im";
 import { userContext } from "@/pages/_app";
 import { PiSignOutFill } from "react-icons/pi";
-import { BookCheck, LayoutDashboard ,UserRound , UserStar} from "lucide-react";
+import { BookA, BookCheck, LayoutDashboard ,TableOfContents,UserRound , UserStar, Wallet} from "lucide-react";
 import Swal from "sweetalert2";
 import { FaUserTie } from "react-icons/fa";
 
@@ -27,6 +27,13 @@ const SidePannel = ({ setOpenTab, openTab }) => {
       img: <LayoutDashboard className="text-3xl" />,
       access: ["admin"],
     },
+   
+    {
+      href: "/sheduleBooking",
+      title: "Shedule Booking",
+      img: <BookA className="text-3xl" />,
+      access: ["admin"],
+    },
     {
       href: "/bookings",
       title: "Bookings",
@@ -43,6 +50,18 @@ const SidePannel = ({ setOpenTab, openTab }) => {
       href: "/instructors",
       title: "Instructors",
       img: <FaUserTie className="text-2xl" />,
+      access: ["admin"],
+    },
+     {
+      href: "/walletBalance",
+      title: "Wallet Balance",
+      img: <Wallet className="text-2xl" />,
+      access: ["admin"],
+    },
+     {
+      href: "/content",
+      title: "Content",
+      img: <TableOfContents className="text-2xl" />,
       access: ["admin"],
     },
     

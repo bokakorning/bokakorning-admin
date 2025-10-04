@@ -9,6 +9,7 @@ import { FaEye } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { Users } from "lucide-react";
 import moment from "moment";
+import constant from "@/services/constant";
 
 function instructors(props) {
   const router = useRouter();
@@ -182,41 +183,70 @@ function instructors(props) {
       <div className="p-4 flex flex-col items-center justify-center">
         {row?.original?.rate_per_hour ? (
           <p className="text-black text-base font-normal">
-            ${row.original.rate_per_hour}
+            {constant?.currency} {row.original.rate_per_hour}
           </p>
         ) : (
           <>
             <button
               onClick={() => setIsOpen(true)}
-              className="px-3 py-1 underline text-black cursor-pointer rounded"
+              className="px-3 py-2  text-white cursor-pointer rounded-md bg-custom-sky"
             >
               Set Rate
             </button>
 
             {/* Modal */}
             {isOpen && (
-              <div className="fixed inset-0 flex items-center justify-center bg-black/20 bg-opacity-40">
-                <div className="bg-white p-6 rounded shadow-lg w-80">
-                  <h2 className="text-lg font-semibold mb-4">Set Rate per Hour</h2>
-                  <input
-                    type="number"
-                    value={rate}
-                    onChange={(e) => setRate(e.target.value)}
-                    className="w-full border p-2 rounded mb-4"
-                    placeholder="Enter rate"
-                  />
-                  <div className="flex justify-end gap-2">
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                <div className="bg-white rounded-2xl shadow-2xl w-96 mx-4 p-6 transform transition-all duration-300 scale-100">
+
+                  {/* Header */}
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold text-gray-900">Set Rate per Hour</h2>
                     <button
                       onClick={() => setIsOpen(false)}
-                      className="px-3 py-2 bg-gray-300 rounded"
+                      className="text-gray-400 cursor-pointer hover:text-gray-600 transition-colors duration-200"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  {/* Input Section */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Hourly Rate
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        value={rate}
+                        onChange={(e) => setRate(e.target.value)}
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 pl-10 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-all duration-200"
+                        placeholder="0.00"
+                        min="0"
+                        step="0.01"
+                      />
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span className="text-gray-500 font-medium">{constant?.currency}</span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2">Enter the hourly rate in {constant?.currency}</p>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setIsOpen(false)}
+                      className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 cursor-pointer font-medium transition-all duration-200"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleSave}
-                      className="px-3 py-2 bg-custom-sky text-white rounded"
+                      className="flex-1 px-4 py-3 bg-sky-400 text-white rounded-xl hover:bg-sky-600 font-medium transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer transform hover:-translate-y-0.5"
                     >
-                      Save
+                      Save Rate
                     </button>
                   </div>
                 </div>
@@ -244,11 +274,7 @@ function instructors(props) {
 
   const columns = useMemo(
     () => [
-      {
-        Header: "Instructor Id",
-        accessor: "studentId",
-        Cell: StudentId,
-      },
+
       {
         Header: "Name",
         accessor: "name",

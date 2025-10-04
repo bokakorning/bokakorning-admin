@@ -1,10 +1,7 @@
 import React, { useMemo, useState, useEffect, useContext } from "react";
 import Table from "../../components/table";
-import { FiEdit, FiEye } from "react-icons/fi";
-import { RiDeleteBinLine } from "react-icons/ri";
 import { Api } from "@/services/service";
 import { useRouter } from "next/router";
-import Swal from "sweetalert2";
 import { userContext } from "./_app";
 import isAuth from "../../components/isAuth";
 import { toast } from "react-toastify";
@@ -49,14 +46,6 @@ function students(props) {
   };
 
 
-  const StudentId = ({ value }) => {
-    return (
-      <div className="p-4 flex flex-col items-center justify-center">
-        <p className="text-black text-base font-normal">{value || "N/A"}</p>
-      </div>
-    );
-  };
-
   const StudentName = ({ value }) => {
     return (
       <div className="p-4 flex flex-col items-center justify-center">
@@ -82,14 +71,6 @@ function students(props) {
     );
   };
 
-  const Document = ({ row }) => {
-    const value = row.original.doc ? "✅" : "❌";
-    return (
-      <div className="p-4 flex flex-col items-center justify-center">
-        <p className="text-black text-base font-normal">{value}</p>
-      </div>
-    );
-  };
 
   const Status = ({ value }) => {
     let display = "";
@@ -146,7 +127,6 @@ function students(props) {
     );
   };
 
-
   const actionHandler = ({ row }) => {
     return (
       <div className="flex cursor-pointer text-black items-center justify-evenly py-2 rounded-[10px] mr-[10px]"
@@ -163,11 +143,6 @@ function students(props) {
 
   const columns = useMemo(
     () => [
-      {
-        Header: "Student Id",
-        accessor: "studentId",
-        Cell: StudentId,
-      },
       {
         Header: "Name",
         accessor: "name",
@@ -188,11 +163,7 @@ function students(props) {
         accessor: "createdAt",
         Cell: Registered,
       },
-      {
-        Header: "Document",
-        // accessor: "Document",
-        Cell: Document,
-      },
+
       {
         Header: "Status",
         accessor: "status",

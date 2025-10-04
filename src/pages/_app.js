@@ -8,6 +8,7 @@ import { createContext, useEffect, useState } from "react";
 
 export const userContext = createContext();
 export const dataContext = createContext();
+
 export default function App({ Component, pageProps }) {
   const [user, setUser] = useState({});
   const [data, setData] = useState({});
@@ -26,6 +27,7 @@ export default function App({ Component, pageProps }) {
       }, 5000);
     }
   }, [toast]);
+
   useEffect(() => {
     getUserDetail();
   }, []);
@@ -40,16 +42,18 @@ export default function App({ Component, pageProps }) {
       if (router.route !== "/login") {
         router.push("/login");
       }
-
     }
   };
 
   return (
     <>
-      {" "}
       <dataContext.Provider value={[data, setData]}>
         <userContext.Provider value={[user, setUser]}>
-          <ToastContainer position="top-right" autoClose={3000}  />
+          <ToastContainer position="top-right" autoClose={3000} />
+          
+          {/* Loader Add Here */}
+          {open && <Loader open={open} />}
+
           <Layout loader={setOpen} toaster={setToast}>
             {user && (
               <Component
@@ -60,7 +64,7 @@ export default function App({ Component, pageProps }) {
               />
             )}
           </Layout>
-        </userContext.Provider>{" "}
+        </userContext.Provider>
       </dataContext.Provider>
     </>
   );
