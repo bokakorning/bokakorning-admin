@@ -3,6 +3,7 @@ import { Api } from '@/services/service';
 import { useRouter } from "next/router";
 import { toast } from 'react-toastify';
 import { Shield, Lock, Eye, FileText } from 'lucide-react';
+import isAuth from '../../components/isAuth';
 
 const TermsAndConditions = () => {
   const [termsAndConditions, setTermsAndConditions] = useState('');
@@ -130,4 +131,4 @@ const TermsAndConditions = () => {
   );
 };
 
-export default TermsAndConditions;
+export default isAuth(TermsAndConditions);

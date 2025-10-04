@@ -1,21 +1,29 @@
 import axios from "axios";
-
 // const ConstantsUrl = "http://localhost:3004/";
 const ConstantsUrl = "https://api.bokakorning.online/";
 
+// Public routes jahan auth skip hoga
+const publicRoutes = ["/aboutus", "/privacypolicy", "/termsandconditions"];
+
 function handleAuthError(err, router) {
   if (typeof window !== "undefined") {
-    console.warn("Auth error:", err?.response?.data?.message || err.message);
-    localStorage.removeItem("token");
-    localStorage.removeItem("userDetail");
-    router.push("/login");
+    const currentPath = router.asPath.toLowerCase();
+    if (!publicRoutes.includes(currentPath)) {
+      console.warn("Auth error:", err?.response?.data?.message || err.message);
+      localStorage.removeItem("token");
+      localStorage.removeItem("userDetail");
+      router.push("/login");
+    }
   }
 }
 
 function Api(method, url, data, router) {
   return new Promise(function (resolve, reject) {
     let token = "";
-    if (typeof window !== "undefined") {
+    const currentPath = typeof window !== "undefined" ? window.location.pathname.toLowerCase() : "";
+
+    // Agar public route hai → token skip
+    if (!publicRoutes.includes(currentPath)) {
       token = localStorage?.getItem("token") || "";
     }
 
@@ -23,7 +31,7 @@ function Api(method, url, data, router) {
       method,
       url: ConstantsUrl + url,
       data,
-      headers: { Authorization: `jwt ${token}` },
+      headers: token ? { Authorization: `jwt ${token}` } : {},
     }).then(
       (res) => resolve(res.data),
       (err) => {
@@ -32,6 +40,7 @@ function Api(method, url, data, router) {
         if (err.response) {
           const status = err.response.status;
           const msg = err.response.data?.message || "";
+
           if (
             status === 401 ||
             msg.toLowerCase().includes("expired") ||
@@ -52,7 +61,10 @@ function Api(method, url, data, router) {
 function ApiFormData(method, url, data, router) {
   return new Promise(function (resolve, reject) {
     let token = "";
-    if (typeof window !== "undefined") {
+    const currentPath = typeof window !== "undefined" ? window.location.pathname.toLowerCase() : "";
+
+    // Agar public route hai → token skip
+    if (!publicRoutes.includes(currentPath)) {
       token = localStorage?.getItem("token") || "";
     }
 
@@ -61,7 +73,7 @@ function ApiFormData(method, url, data, router) {
       url: ConstantsUrl + url,
       data,
       headers: {
-        Authorization: `jwt ${token}`,
+        ...(token ? { Authorization: `jwt ${token}` } : {}),
         "Content-Type": "multipart/form-data",
       },
     }).then(

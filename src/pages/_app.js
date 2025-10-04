@@ -29,28 +29,31 @@ export default function App({ Component, pageProps }) {
   }, [toast]);
 
   useEffect(() => {
-    getUserDetail();
-  }, []);
+    const publicRoutes = ["/aboutus", "/privacypolicy", "/termsandconditions"];
+    const getUserDetail = () => {
+      const user = localStorage.getItem("userDetail");
+      const currentPath = router.pathname.toLowerCase();
+      const isPublic = publicRoutes.includes(currentPath);
 
-  const getUserDetail = () => {
-    const user = localStorage.getItem("userDetail");
-
-    if (user) {
-      setUser(JSON.parse(user));
-      // router.push("/");
-    } else {
-      if (router.route !== "/login") {
-        router.push("/login");
+      if (user) {
+        setUser(JSON.parse(user));
+      } else {
+        if (!isPublic && currentPath !== "/login") {
+          router.push("/login");
+        }
       }
-    }
-  };
+    };
+
+    getUserDetail();
+  }, [router.pathname]);
+
 
   return (
     <>
       <dataContext.Provider value={[data, setData]}>
         <userContext.Provider value={[user, setUser]}>
           <ToastContainer position="top-right" autoClose={3000} />
-          
+
           {/* Loader Add Here */}
           {open && <Loader open={open} />}
 

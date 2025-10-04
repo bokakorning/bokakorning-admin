@@ -3,6 +3,7 @@ import { Api } from '@/services/service';
 import { useRouter } from "next/router";
 import { toast } from 'react-toastify';
 import { Shield, Lock, Eye, FileText } from 'lucide-react';
+import isAuth from '../../components/isAuth';
 
 const PrivacyPolicy = () => {
   const [privacyPolicy, setPrivacyPolicy] = useState('');
@@ -131,4 +132,4 @@ const PrivacyPolicy = () => {
   );
 };
 
-export default PrivacyPolicy;
+ export default isAuth(PrivacyPolicy);

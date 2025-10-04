@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, UserCheck, CheckCircle, GraduationCap, Wallet, Users, Award, Clock, Shield } from 'lucide-react';
 import Link from 'next/link';
+import isAuth from '../../components/isAuth';
 
 const AboutUs = () => {
   const [visibleSections, setVisibleSections] = useState({});
@@ -86,9 +87,9 @@ const AboutUs = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-sky-50">
       {/* Hero Section */}
-<div className='flex  flex-col justify-center items-center'> 
-      <h1 className='md:pt-16 pt-10  text-center text-4xl md:text-5xl font-black bg-gradient-to-r from-sky-300 via-sky-400 to-sky-400 bg-clip-text text-transparent mb-4 tracking-tight'> About Us</h1>
-      <p className='md:w-56 w-40 h-[6px] bg-sky-400 rounded'></p>
+      <div className='flex  flex-col justify-center items-center'>
+        <h1 className='md:pt-16 pt-10  text-center text-4xl md:text-5xl font-black bg-gradient-to-r from-sky-300 via-sky-400 to-sky-400 bg-clip-text text-transparent mb-4 tracking-tight'> About Us</h1>
+        <p className='md:w-56 w-40 h-[6px] bg-sky-400 rounded'></p>
       </div>
       <section className="container mx-auto px-4 py-6 lg:py-14">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -96,11 +97,10 @@ const AboutUs = () => {
           <div
             id="hero-text"
             data-animate
-            className={`space-y-6 transition-all duration-1000 ${
-              visibleSections['hero-text']
+            className={`space-y-6 transition-all duration-1000 ${visibleSections['hero-text']
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-10'
-            }`}
+              }`}
           >
             <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
               Welcome to{' '}
@@ -128,11 +128,10 @@ const AboutUs = () => {
           <div
             id="hero-image"
             data-animate
-            className={`transition-all duration-1000 delay-300 ${
-              visibleSections['hero-image']
+            className={`transition-all duration-1000 delay-300 ${visibleSections['hero-image']
                 ? 'opacity-100 translate-x-0'
                 : 'opacity-0 translate-x-10'
-            }`}
+              }`}
           >
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-br from-sky-400 to-blue-500 rounded-3xl transform rotate-3"></div>
@@ -152,11 +151,10 @@ const AboutUs = () => {
           <div
             id="features-header"
             data-animate
-            className={`text-center mb-12 transition-all duration-1000 ${
-              visibleSections['features-header']
+            className={`text-center mb-12 transition-all duration-1000 ${visibleSections['features-header']
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-10'
-            }`}
+              }`}
           >
             <h2 className="md:text-4xl text-2xl font-bold text-gray-900 mb-2">
               Why Choose Bokakorning?
@@ -172,11 +170,10 @@ const AboutUs = () => {
                 key={index}
                 id={`feature-${index}`}
                 data-animate
-                className={`bg-gradient-to-br from-sky-50 to-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 ${
-                  visibleSections[`feature-${index}`]
+                className={`bg-gradient-to-br from-sky-50 to-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 ${visibleSections[`feature-${index}`]
                     ? 'opacity-100 translate-y-0'
                     : 'opacity-0 translate-y-10'
-                }`}
+                  }`}
               >
                 <div className="bg-gradient-to-br from-sky-300 to-blue-400 w-16 h-16 rounded-xl flex items-center justify-center text-white mb-4 transform group-hover:scale-110 transition-transform">
                   {feature.icon}
@@ -200,16 +197,15 @@ const AboutUs = () => {
             <div
               id="about-content"
               data-animate
-              className={`space-y-8 transition-all duration-1000 ${
-                visibleSections['about-content']
+              className={`space-y-8 transition-all duration-1000 ${visibleSections['about-content']
                   ? 'opacity-100 translate-y-0'
                   : 'opacity-0 translate-y-10'
-              }`}
+                }`}
             >
               <h2 className="text-4xl font-bold text-gray-900 text-center mb-8">
                 About Bokakorning
               </h2>
-              
+
               <div className="bg-white rounded-2xl p-8 shadow-lg">
                 <h3 className="text-2xl font-bold text-sky-400 mb-4">Our Vision</h3>
                 <p className="text-gray-700 leading-relaxed mb-4">
@@ -254,11 +250,10 @@ const AboutUs = () => {
           <div
             id="process-header"
             data-animate
-            className={`text-center mb-16 transition-all duration-1000 ${
-              visibleSections['process-header']
+            className={`text-center mb-16 transition-all duration-1000 ${visibleSections['process-header']
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-10'
-            }`}
+              }`}
           >
             <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-4">
               How It Works
@@ -275,11 +270,10 @@ const AboutUs = () => {
                 key={index}
                 id={`step-${index}`}
                 data-animate
-                className={`relative transition-all duration-1000 delay-${index * 100} ${
-                  visibleSections[`step-${index}`]
+                className={`relative transition-all duration-1000 delay-${index * 100} ${visibleSections[`step-${index}`]
                     ? 'opacity-100 translate-x-0'
                     : 'opacity-0 -translate-x-10'
-                }`}
+                  }`}
               >
                 <div className="flex items-start md:mb-12 mb-4 group">
                   {/* Icon Circle */}
@@ -311,12 +305,12 @@ const AboutUs = () => {
         </div>
       </section>
 
-  
+
 
       <footer className="bg-sky-400 text-white py-8">
         <div className="container mx-auto px-4 text-center">
           <div className="flex flex-wrap justify-center gap-6 text-md">
-           
+
             <Link href="/PrivacyPolicy" className=" transition-colors duration-300">
               Privacy Policy
             </Link>
@@ -334,4 +328,4 @@ const AboutUs = () => {
   );
 };
 
-export default AboutUs;
+export default isAuth(AboutUs);
