@@ -306,7 +306,6 @@ const AboutUs = () => {
       </section>
 
 
-
       <footer className="bg-sky-400 text-white py-8">
         <div className="container mx-auto px-4 text-center">
           <div className="flex flex-wrap justify-center gap-6 text-md">
