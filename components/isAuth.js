@@ -34,7 +34,7 @@ const isAuth = (Component) => {
       }
     }, [auth]);
 
-    // ✅ Render only if auth is true
+
     if (auth === null) return null;
 
     return <Component {...props} />;

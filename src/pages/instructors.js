@@ -36,8 +36,9 @@ function instructors(props) {
       (res) => {
         props.loader(false);
         console.log("abcd", res?.data);
-        setInstructorList(res.data);
-        setPagination(res?.pagination);
+        const data = res?.data;
+        setInstructorList(data?.users);
+        setPagination(data?.pagination);
       },
       (err) => {
         props.loader(false);
