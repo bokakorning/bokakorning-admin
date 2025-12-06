@@ -7,7 +7,7 @@ import isAuth from "../../components/isAuth";
 import { toast } from "react-toastify";
 import { FaEye } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
-import { Users } from "lucide-react";
+import { PlusIcon, Users } from "lucide-react";
 import moment from "moment";
 import constant from "@/services/constant";
 
@@ -197,10 +197,20 @@ function Bookings(props) {
   return (
     <div className="w-full h-full bg-transparent mt-5  md:px-8 px-4">
       <div className=" h-full">
-        <p className="text-black font-bold md:text-[46px] text-2xl cursor-pointer">
-          <span className="w-2 h-8 bg-[#F38529] rounded "></span>
-          Bookings
-        </p>
+        <div className="flex justify-between items-center">
+          <p className="text-black font-bold md:text-[46px] text-2xl cursor-pointer">
+            <span className="w-2 h-8 bg-[#F38529] rounded "></span>
+            Bookings
+          </p>
+          <button
+            className="flex justify-center items-center gap-1 text-sm text-white
+             bg-custom-blue px-3 py-3 rounded-xl cursor-pointer"
+            onClick={() => router.push("/addShedulebooking")}
+          >
+            <PlusIcon size={18} />
+            Shedule Booking
+          </button>
+        </div>
         <div className="bg-white md:pb-32 px-1 rounded-[12px] h-full overflow-y-scroll scrollbar-hide overflow-scroll pb-28 mt-3">
           <div className="bg-[#CFE0E54D] px-4 min-h-screen rounded-[24px]">
             <p className="text-black text-[20px] pt-4"> Booking Details</p>

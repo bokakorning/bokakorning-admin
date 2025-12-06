@@ -9,6 +9,8 @@ import {
   Bell,
   Eye,
   User,
+  PlusCircle,
+  PlusIcon,
 } from "lucide-react";
 import { Api } from "@/services/service";
 import { useRouter } from "next/router";
@@ -177,9 +179,26 @@ const Dashboard = (props) => {
   return (
     <div className="md:p-6 p-3 ">
       <div className="max-w-7xl mx-auto space-y-6 overflow-x-auto scrollbar-hide overflow-scroll  pb-32">
-
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
+          <div className="flex justify-start gap-4">
+            <button
+              className="flex justify-center items-center gap-1 text-sm text-white
+             bg-custom-blue px-3 py-3 rounded-xl cursor-pointer"
+              onClick={() => router.push("/AddUser?type=user")}
+            >
+              <PlusIcon size={18} />
+              Add Student
+            </button>
+            <button
+              className="flex justify-center items-center gap-1 text-sm text-white
+             bg-custom-blue px-3 py-3 rounded-xl cursor-pointer"
+              onClick={() => router.push("/AddUser?type=instructer")}
+            >
+              <PlusIcon size={18} />
+              Add Instruter
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -206,8 +225,8 @@ const Dashboard = (props) => {
           })}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4">
-          <div className="bg-white rounded-2xl p-6 shadow-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 ">
+          <div className="bg-white rounded-2xl p-4 shadow-sm">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Bookings This Week
             </h3>
@@ -240,7 +259,7 @@ const Dashboard = (props) => {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-sm">
+          <div className="bg-white p-4 rounded-xl shadow-sm">
             {/* USERS */}
             <h3 className="text-lg font-semibold mb-4 text-gray-800">
               Last 7 Days Users

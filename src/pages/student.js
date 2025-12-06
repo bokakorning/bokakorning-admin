@@ -7,7 +7,7 @@ import isAuth from "../../components/isAuth";
 import { toast } from "react-toastify";
 import { FaEye } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
-import { Users } from "lucide-react";
+import { PlusIcon, Users } from "lucide-react";
 import moment from "moment";
 
 function students(props) {
@@ -191,13 +191,25 @@ function students(props) {
   return (
     <div className="w-full h-full bg-transparent mt-5  md:px-8 px-4">
       <div className=" h-full">
-        <p className="text-black font-bold md:text-[46px] text-2xl cursor-pointer">
-          <span className="w-2 h-8 bg-[#F38529] rounded "></span>
-          Students
-        </p>
+        <div className="flex justify-between items-center">
+          <p className="text-black font-bold md:text-[46px] text-2xl cursor-pointer">
+            Students
+          </p>
+          <button
+            className="flex justify-center items-center gap-1 text-sm text-white
+                           bg-custom-blue px-3 py-3 rounded-xl cursor-pointer"
+            onClick={() => router.push("/AddUser?type=user")}
+          >
+            <PlusIcon size={18} />
+            Add Student
+          </button>
+        </div>
         <div className="bg-white md:pb-22 px-1 rounded-[12px] h-full overflow-y-scroll scrollbar-hide overflow-scroll pb-18 md:mt-5 mt-5">
           <div className="bg-[#CFE0E54D] px-4 min-h-screen rounded-[24px]">
-            <p className="text-black text-[20px] pt-6"> Student Details</p>
+            <div className="flex justify-between items-center pt-2">
+              <p className="text-black text-[20px] pt-6"> Student Details</p>
+            </div>
+
             <div className="-mt-4">
               {studentList.length > 0 ? (
                 <Table

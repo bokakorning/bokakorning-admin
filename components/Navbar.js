@@ -71,7 +71,7 @@ const Navbar = ({ setOpenTab, openTab }) => {
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   >
                     <img
-                      src={user?.profile || "/office-man.png"} 
+                      src={user?.profile} 
                       alt="User"
                       className="w-full h-full object-cover"
                       onError={imageOnError}
