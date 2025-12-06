@@ -7,7 +7,7 @@ const isAuth = (Component) => {
     const [auth, setAuth] = useState(null);
 
     const publicRoutes = ["/aboutus", "/privacypolicy", "/termsandconditions"];
-    const currentPath = router.pathname.toLowerCase();
+    let currentPath = router.pathname.toLowerCase().replace(/\/$/, ""); // 👈 FIX
     const isPublic = publicRoutes.includes(currentPath);
 
     // ✅ Public page short-circuit
@@ -33,7 +33,6 @@ const isAuth = (Component) => {
         router.replace("/login");
       }
     }, [auth]);
-
 
     if (auth === null) return null;
 

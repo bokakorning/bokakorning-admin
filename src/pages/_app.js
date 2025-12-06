@@ -33,6 +33,7 @@ export default function App({ Component, pageProps }) {
     const getUserDetail = () => {
       const user = localStorage.getItem("userDetail");
       const currentPath = router.pathname.toLowerCase();
+      currentPath = currentPath.replace(/\/$/, ""); // 👈 FIX
       const isPublic = publicRoutes.includes(currentPath);
 
       if (user) {
@@ -46,7 +47,6 @@ export default function App({ Component, pageProps }) {
 
     getUserDetail();
   }, [router.pathname]);
-
 
   return (
     <>
