@@ -32,7 +32,7 @@ export default function App({ Component, pageProps }) {
     const publicRoutes = ["/aboutus", "/privacypolicy", "/termsandconditions"];
     const getUserDetail = () => {
       const user = localStorage.getItem("userDetail");
-      const currentPath = router.pathname.toLowerCase();
+      let currentPath = router.pathname.toLowerCase();
       currentPath = currentPath.replace(/\/$/, ""); // 👈 FIX
       const isPublic = publicRoutes.includes(currentPath);
 
