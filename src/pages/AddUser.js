@@ -12,24 +12,6 @@ export default function AddUser(props) {
   const [pageReady, setPageReady] = useState(false);
   const fileRef = useRef(null);
 
-  const handleFile = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    if (file.size > 1 * 1024 * 1024) {
-      toast.error("Max 1MB allowed");
-      return;
-    }
-
-    setImage(file);
-  };
-
-  const removeImage = () => {
-    setImage(null);
-    if (fileRef.current) {
-      fileRef.current.value = "";
-    }
-  };
   const [value, setValue] = useState({
     name: "",
     email: "",
@@ -97,16 +79,20 @@ export default function AddUser(props) {
 
     const t = router.query.type || "";
     const id = router.query.editId || "";
+    console.log("m", t, id);
 
     if (t !== type) setType(t);
     if (id !== editId) setEditId(id);
     if (!pageReady) setPageReady(true);
-  }, [router.isReady, router.query.type, router.query.editId]);
+  }, []);
 
-  useEffect(() => {
-    if (!editId) return;
-    fetchDataById();
-  }, [editId]);
+//   useEffect(() => {
+//     if (!editId) return;
+//     fetchDataById();
+//   }, [editId]);
+
+  console.log(editId);
+  console.log(type);
 
   const fetchDataById = async () => {
     try {
@@ -121,6 +107,25 @@ export default function AddUser(props) {
       }
     } catch (err) {
       toast.error("Unable to load user");
+    }
+  };
+
+  const handleFile = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 1 * 1024 * 1024) {
+      toast.error("Max 1MB allowed");
+      return;
+    }
+
+    setImage(file);
+  };
+
+  const removeImage = () => {
+    setImage(null);
+    if (fileRef.current) {
+      fileRef.current.value = "";
     }
   };
 
