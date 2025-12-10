@@ -200,8 +200,30 @@ export default function AddUser(props) {
     }
   };
 
-  const UserForm = () => (
-    <div className="space-y-4 ">
+
+
+  if (!pageReady) return null;
+
+  return (
+    <div className="min-h-screen px-4 py-2 pb-10">
+      <div className="w-full">
+        <div className="bg-white shadow rounded-2xl  overflow-hidden">
+          {/* Header */}
+          <div className="bg-custom-blue md:px-8 px-4 py-6">
+            <h2 className="text-2xl font-bold text-white">
+              {editId ? "Edit" : "Add"}{" "}
+              {type === "user" ? "User" : "Instructor"}
+            </h2>
+            <p className="text-blue-100 text-sm mt-1">
+              {editId
+                ? "Update the information below"
+                : "Fill in the details to create a new account"}
+            </p>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="md:p-8 p-4">
+            {type === "user" ? <div className="space-y-4 ">
       <div className="grid grid-cols-1 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -280,11 +302,7 @@ export default function AddUser(props) {
           />
         </div>
       </div>
-    </div>
-  );
-
-  const InstructorForm = () => (
-    <div className="space-y-6">
+    </div> : <div className="space-y-6">
       <div className="border-b pb-4">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">
           Personal Information
@@ -516,31 +534,7 @@ export default function AddUser(props) {
 
         <Locationinput userDetail={userDetail} setUserDetail={setUserDetail} />
       </div>
-    </div>
-  );
-
-  if (!pageReady) return null;
-
-  return (
-    <div className="min-h-screen px-4 py-2 pb-10">
-      <div className="w-full">
-        <div className="bg-white shadow rounded-2xl  overflow-hidden">
-          {/* Header */}
-          <div className="bg-custom-blue md:px-8 px-4 py-6">
-            <h2 className="text-2xl font-bold text-white">
-              {editId ? "Edit" : "Add"}{" "}
-              {type === "user" ? "User" : "Instructor"}
-            </h2>
-            <p className="text-blue-100 text-sm mt-1">
-              {editId
-                ? "Update the information below"
-                : "Fill in the details to create a new account"}
-            </p>
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="md:p-8 p-4">
-            {type === "user" ? <UserForm /> : <InstructorForm />}
+    </div>}
 
             {/* Submit Button */}
             <div className="mt-8 flex flex-col md:flex-row gap-4">
