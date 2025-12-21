@@ -24,6 +24,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import moment from "moment";
+import { toast } from "react-toastify";
 
 const Dashboard = (props) => {
   const [Dashboard, setDashboard] = useState({});

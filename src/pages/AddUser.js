@@ -153,7 +153,7 @@ export default function AddUser(props) {
         formData.append("phone", value.phone);
         formData.append("password", value.password);
         formData.append("type", "user");
-        if (document) formData.append("document", document);
+        if (document) formData.append("doc", document);
       } else {
         if (image) formData.append("image", image);
         formData.append("name", userDetail.name);
