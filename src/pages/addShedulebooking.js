@@ -161,14 +161,14 @@ export default function AddScheduleBooking(props) {
 
   return (
     <div className="min-h-screen bg-gray-50 p-3">
-      <div className="w-full bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="w-full bg-white rounded-xl shadow-lg  mb-36">
         {/* Header */}
         <div className="bg-custom-blue text-white p-6">
           <h1 className="text-2xl font-bold">Schedule Booking</h1>
           <p className="text-blue-100 mt-1">Create a new driving session</p>
         </div>
 
-        <div className="md:p-6 p-4 space-y-6">
+        <div className="md:p-6 p-4 space-y-6 ">
           {/* Vehicle Selection */}
           <div>
             <label className="block text-gray-700 font-semibold mb-3">

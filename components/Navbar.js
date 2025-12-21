@@ -71,11 +71,12 @@ const Navbar = ({ setOpenTab, openTab }) => {
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   >
                     <img
-                      src={user?.profile} 
+                      src={user?.profile || "/userprofile.png"} 
                       alt="User"
                       className="w-full h-full object-cover"
                       onError={imageOnError}
                     />
+
                   </div>
                   <div className="flex flex-col text-left">
                     <p className="text-gray-800 font-medium text-sm">{user?.name}</p>

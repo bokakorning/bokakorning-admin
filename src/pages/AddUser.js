@@ -84,15 +84,12 @@ export default function AddUser(props) {
     if (t !== type) setType(t);
     if (id !== editId) setEditId(id);
     if (!pageReady) setPageReady(true);
-  }, []);
+  }, [router.isReady, router.query]);
 
-//   useEffect(() => {
-//     if (!editId) return;
-//     fetchDataById();
-//   }, [editId]);
-
-  console.log(editId);
-  console.log(type);
+  //   useEffect(() => {
+  //     if (!editId) return;
+  //     fetchDataById();
+  //   }, [editId]);
 
   const fetchDataById = async () => {
     try {
@@ -118,7 +115,6 @@ export default function AddUser(props) {
       toast.error("Max 1MB allowed");
       return;
     }
-
     setImage(file);
   };
 
@@ -171,36 +167,42 @@ export default function AddUser(props) {
         formData.append("experience_month", userDetail.experience_month);
         formData.append("transmission", userDetail.transmission);
         formData.append("rate_per_hour", userDetail.ratePerHour);
-        formData.append("location", JSON.stringify(userDetail.location));
+        formData.append(
+          "location",
+          JSON.stringify({
+            type: "Point",
+            coordinates: [
+              Number(userDetail.location.coordinates[0]),
+              Number(userDetail.location.coordinates[1]),
+            ],
+          })
+        );
         formData.append("status", "Approved");
-        formData.append("type", "instructor");
+        formData.append("type", "instructer");
+      }
+      let url = "";
+      if (type === "user") {
+        url = editId ? `update/${editId}` : `auth/register`;
+      } else {
+        url = editId ? `update/${editId}` : `auth/registerInstructer`;
       }
 
-      let url = editId ? `update/${editId}` : `auth/register`;
       let method = "post";
 
       const res = await Api(method, url, formData, router);
       props.loader(false);
 
-      if (res?.status) {
-        toast.success(
-          editId ? "Updated Successfully!" : "Created Successfully!"
-        );
-        if (type == "user") {
-          router.push(`/student`);
-        } else {
-          router.push("/instructors");
-        }
+      toast.success(editId ? "Updated Successfully!" : "Created Successfully!");
+      if (type == "user") {
+        router.push(`/student`);
       } else {
-        toast.error(res?.message || "Failed");
+        router.push("/instructors");
       }
     } catch (err) {
       props.loader(false);
       toast.error(err?.message || "Something went wrong");
     }
   };
-
-
 
   if (!pageReady) return null;
 
@@ -223,318 +225,343 @@ export default function AddUser(props) {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="md:p-8 p-4">
-            {type === "user" ? <div className="space-y-4 ">
-      <div className="grid grid-cols-1 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Full Name <span className="text-red-500">*</span>
-          </label>
-          <input
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
-            placeholder="Enter full name"
-            name="name"
-            value={value.name}
-            onChange={(e) => updateValue("name", e.target.value)}
-            required
-          />
-        </div>
+            {type === "user" ? (
+              <div className="space-y-4 ">
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Full Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
+                      placeholder="Enter full name"
+                      name="name"
+                      value={value.name}
+                      onChange={(e) => updateValue("name", e.target.value)}
+                      required
+                    />
+                  </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Email <span className="text-red-500">*</span>
-          </label>
-          <input
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
-            placeholder="Enter email"
-            type="email"
-            name="email"
-            value={value.email}
-            onChange={(e) => updateValue("email", e.target.value)}
-            required
-          />
-        </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
+                      placeholder="Enter email"
+                      type="email"
+                      name="email"
+                      value={value.email}
+                      onChange={(e) => updateValue("email", e.target.value)}
+                      required
+                    />
+                  </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Phone <span className="text-red-500">*</span>
-          </label>
-          <input
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
-            placeholder="Enter phone number"
-            name="phone"
-            value={value.phone}
-            onChange={(e) => updateValue("phone", e.target.value)}
-            required
-          />
-        </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Phone <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
+                      placeholder="Enter phone number"
+                      name="phone"
+                      value={value.phone}
+                      onChange={(e) => updateValue("phone", e.target.value)}
+                      required
+                    />
+                  </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Password <span className="text-red-500">*</span>
-          </label>
-          <input
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
-            placeholder="Enter password"
-            type="password"
-            name="password"
-            value={value.password}
-            onChange={(e) => updateValue("password", e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Attach Your Driving Permit
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files[0];
-              if (!file) return;
-              if (file.size > 1 * 1024 * 1024) {
-                toast.error("Max 1MB allowed");
-                return;
-              }
-              setDocument(file);
-            }}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2  focus:border-transparent outline-none text-black transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-sky-400 "
-          />
-        </div>
-      </div>
-    </div> : <div className="space-y-6">
-      <div className="border-b pb-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
-          Personal Information
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Full Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
-              placeholder="Enter full name"
-              name="name"
-              value={userDetail.name}
-              onChange={(e) => updateUserValue("name", e.target.value)}
-              required
-            />
-          </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Password <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
+                      placeholder="Enter password"
+                      type="password"
+                      name="password"
+                      value={value.password}
+                      onChange={(e) => updateValue("password", e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Attach Your Driving Permit
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        if (file.size > 1 * 1024 * 1024) {
+                          toast.error("Max 1MB allowed");
+                          return;
+                        }
+                        setDocument(file);
+                      }}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2  focus:border-transparent outline-none text-black transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-sky-400 "
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <div className="border-b pb-4">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    Personal Information
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Full Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
+                        placeholder="Enter full name"
+                        name="name"
+                        value={userDetail.name}
+                        onChange={(e) =>
+                          updateUserValue("name", e.target.value)
+                        }
+                        required
+                      />
+                    </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Email <span className="text-red-500">*</span>
-            </label>
-            <input
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
-              placeholder="Enter email"
-              type="email"
-              name="email"
-              value={userDetail.email}
-              onChange={(e) => updateUserValue("email", e.target.value)}
-              required
-            />
-          </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Email <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
+                        placeholder="Enter email"
+                        type="email"
+                        name="email"
+                        value={userDetail.email}
+                        onChange={(e) =>
+                          updateUserValue("email", e.target.value)
+                        }
+                        required
+                      />
+                    </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Phone <span className="text-red-500">*</span>
-            </label>
-            <input
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
-              placeholder="Enter phone number"
-              name="phone"
-              value={userDetail.phone}
-              onChange={(e) => updateUserValue("phone", e.target.value)}
-              required
-            />
-          </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Phone <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
+                        placeholder="Enter phone number"
+                        name="phone"
+                        value={userDetail.phone}
+                        onChange={(e) =>
+                          updateUserValue("phone", e.target.value)
+                        }
+                        required
+                      />
+                    </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Password <span className="text-red-500">*</span>
-            </label>
-            <input
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
-              placeholder="Enter password"
-              type="password"
-              name="password"
-              value={userDetail.password}
-              onChange={(e) => updateUserValue("password", e.target.value)}
-              required
-            />
-          </div>
-        </div>
-      </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Password <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
+                        placeholder="Enter password"
+                        type="password"
+                        name="password"
+                        value={userDetail.password}
+                        onChange={(e) =>
+                          updateUserValue("password", e.target.value)
+                        }
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
 
-      <div className="border-b pb-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
-          Vehicle Information
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Vehicle Model <span className="text-red-500">*</span>
-            </label>
-            <input
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
-              placeholder="e.g., Toyota Corolla"
-              name="vehicle_model"
-              value={userDetail.vehicle_model}
-              onChange={(e) => updateUserValue("vehicle_model", e.target.value)}
-              required
-            />
-          </div>
+                <div className="border-b pb-4">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    Vehicle Information
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Vehicle Model <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
+                        placeholder="e.g., Toyota Corolla"
+                        name="vehicle_model"
+                        value={userDetail.vehicle_model}
+                        onChange={(e) =>
+                          updateUserValue("vehicle_model", e.target.value)
+                        }
+                        required
+                      />
+                    </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Model Year <span className="text-red-500">*</span>
-            </label>
-            <input
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
-              placeholder="e.g., 2023"
-              name="model_year"
-              value={userDetail.model_year}
-              onChange={(e) => updateUserValue("model_year", e.target.value)}
-              required
-            />
-          </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Model Year <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
+                        placeholder="e.g., 2023"
+                        name="model_year"
+                        value={userDetail.model_year}
+                        onChange={(e) =>
+                          updateUserValue("model_year", e.target.value)
+                        }
+                        required
+                      />
+                    </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Transmission <span className="text-red-500">*</span>
-            </label>
-            <select
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white text-black"
-              name="transmission"
-              value={userDetail.transmission}
-              onChange={(e) => updateUserValue("transmission", e.target.value)}
-              required
-            >
-              <option value="">Select Transmission</option>
-              <option value="Manual">Manual</option>
-              <option value="Automatic">Automatic</option>
-              <option value="Both">Both</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Rate Per Hour <span className="text-red-500">*</span>
-            </label>
-            <input
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
-              placeholder="e.g., 20"
-              type="number"
-              name="ratePerHour"
-              value={userDetail.ratePerHour}
-              onChange={(e) => updateUserValue("ratePerHour", e.target.value)}
-              required
-            />
-          </div>
-        </div>
-      </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Transmission <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white text-black"
+                        name="transmission"
+                        value={userDetail.transmission}
+                        onChange={(e) =>
+                          updateUserValue("transmission", e.target.value)
+                        }
+                        required
+                      >
+                        <option value="">Select Transmission</option>
+                        <option value="Manual">Manual</option>
+                        <option value="Automatic">Automatic</option>
+                        <option value="Both">Both</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Rate Per Hour <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
+                        placeholder="e.g., 20"
+                        type="number"
+                        name="ratePerHour"
+                        value={userDetail.ratePerHour}
+                        onChange={(e) =>
+                          updateUserValue("ratePerHour", e.target.value)
+                        }
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
 
-      <div className="border-b pb-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Experience</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Years <span className="text-red-500">*</span>
-            </label>
-            <select
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black bg-white"
-              name="experience_year"
-              value={userDetail.experience_year}
-              onChange={(e) =>
-                updateUserValue("experience_year", e.target.value)
-              }
-              required
-            >
-              {years.map((year) => (
-                <option key={year.value} value={year.value}>
-                  {year.label}
-                </option>
-              ))}
-            </select>
-          </div>
+                <div className="border-b pb-4">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    Experience
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Years <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black bg-white"
+                        name="experience_year"
+                        value={userDetail.experience_year}
+                        onChange={(e) =>
+                          updateUserValue("experience_year", e.target.value)
+                        }
+                        required
+                      >
+                        {years.map((year) => (
+                          <option key={year.value} value={year.value}>
+                            {year.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Months <span className="text-red-500">*</span>
-            </label>
-            <select
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none  text-black transition-all bg-white"
-              name="experience_month"
-              value={userDetail.experience_month}
-              onChange={(e) =>
-                updateUserValue("experience_month", e.target.value)
-              }
-              required
-            >
-              {months.map((month) => (
-                <option key={month.value} value={month.value}>
-                  {month.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Months <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none  text-black transition-all bg-white"
+                        name="experience_month"
+                        value={userDetail.experience_month}
+                        onChange={(e) =>
+                          updateUserValue("experience_month", e.target.value)
+                        }
+                        required
+                      >
+                        {months.map((month) => (
+                          <option key={month.value} value={month.value}>
+                            {month.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
 
-      <div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Bio <span className="text-red-500">*</span>
-          </label>
-          <textarea
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black resize-none"
-            placeholder="Tell us about yourself and your teaching experience..."
-            name="bio"
-            rows="4"
-            value={userDetail.bio}
-            onChange={(e) => updateUserValue("bio", e.target.value)}
-            required
-          />
-        </div>
+                <div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Bio <span className="text-red-500">*</span>
+                    </label>
+                    <textarea
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black resize-none"
+                      placeholder="Tell us about yourself and your teaching experience..."
+                      name="bio"
+                      rows="4"
+                      value={userDetail.bio}
+                      onChange={(e) => updateUserValue("bio", e.target.value)}
+                      required
+                    />
+                  </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Profile Image
-          </label>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Profile Image
+                    </label>
 
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFile}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg 
+                    <input
+                      ref={fileRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFile}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg 
             focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none 
             text-black transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg 
             file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-sky-400"
-          />
+                    />
 
-          {image && (
-            <div className="relative inline-block mt-2">
-              <img
-                src={URL.createObjectURL(image)}
-                alt="preview"
-                className="w-20 h-20 object-cover rounded"
-              />
+                    {image && (
+                      <div className="relative inline-block mt-2">
+                        <img
+                          src={URL.createObjectURL(image)}
+                          alt="preview"
+                          className="w-20 h-20 object-cover rounded"
+                        />
 
-              <button
-                onClick={removeImage}
-                className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full cursor-pointer"
-              >
-                <X size={14} />
-              </button>
-            </div>
-          )}
-        </div>
+                        <button
+                          onClick={removeImage}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full cursor-pointer"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
 
-        <Locationinput userDetail={userDetail} setUserDetail={setUserDetail} />
-      </div>
-    </div>}
+                  <Locationinput
+                    userDetail={userDetail}
+                    setUserDetail={setUserDetail}
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Submit Button */}
             <div className="mt-8 flex flex-col md:flex-row gap-4">

@@ -257,7 +257,6 @@ function Table({
                 />
               </PageButton>
 
-              {/* Page numbers with ellipsis */}
               {pagination?.totalPages > 1 && (
                 <>
                   {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
@@ -275,8 +274,8 @@ function Table({
                     return (
                       <PageButton
                         key={pageNum}
-                        className={`bg-blue-100 hover:bg-blue-200 border-blue-300 ${
-                          currentPage === pageNum ? "bg-blue-500 text-white" : ""
+                        className={` hover:bg-blue-200 border-blue-300 ${
+                          currentPage === pageNum ? "bg-blue-500 cursor-pointer text-black" : ""
                         }`}
                         onClick={() => onPageChange(pageNum)}
                       >
