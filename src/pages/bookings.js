@@ -29,9 +29,11 @@ function Bookings(props) {
     getBookings(currentPage);
   }, [user, currentPage]);
 
-  const getBookings = async () => {
+  console.log("current Page", currentPage);
+
+  const getBookings = async (page = 1, limit = 10) => {
     props.loader(true);
-    let url = `booking/getAllBookings?page=1&limit=20`;
+    let url = `booking/getAllBookings?page=${page}&limit=${limit}`;
     Api("get", url, router).then(
       (res) => {
         props.loader(false);

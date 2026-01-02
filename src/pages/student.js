@@ -98,27 +98,6 @@ function students(props) {
     );
   };
 
-  const Availability = ({ value }) => {
-    return (
-      <div className="p-4 flex flex-col items-center justify-center">
-        <p className="text-black text-base font-normal">{value}</p>
-      </div>
-    );
-  };
-  const TotalLessons = ({ value }) => {
-    return (
-      <div className="p-4 flex flex-col items-center justify-center">
-        <p className="text-black text-base font-normal">{value}</p>
-      </div>
-    );
-  };
-  const Completed = ({ value }) => {
-    return (
-      <div className="p-4 flex flex-col items-center justify-center">
-        <p className="text-black text-base font-normal">{value}</p>
-      </div>
-    );
-  };
 
   const actionHandler = ({ row }) => {
     return (
@@ -163,22 +142,7 @@ function students(props) {
         accessor: "status",
         Cell: Status,
       },
-      // {
-      //   Header: "Availability",
-      //   accessor: "Availability",
-      //   Cell: Availability,
-      // },
-      // {
-      //   Header: "TotalLessons",
-      //   accessor: "TotalLessons",
-      //   Cell: TotalLessons,
-      // },
-      // {
-      //   Header: "Completed",
-      //   accessor: "Completed",
-      //   Cell: Completed,
-      // },
-
+  
       {
         Header: "ACTION",
         Cell: actionHandler,

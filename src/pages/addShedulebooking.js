@@ -207,18 +207,7 @@ export default function AddScheduleBooking(props) {
               setPickupAddress={setPickupAddress}
               setUserLocation={setUserLocation}
             />
-            <p className="text-center text-gray-500 text-sm mt-2">
-              Or find it on map
-            </p>
-            <div className="mt-3 bg-gray-100 rounded-lg p-4 h-48 flex items-center justify-center">
-              <div className="text-center text-gray-500">
-                <MapPin className="w-12 h-12 mx-auto mb-2 text-blue-500" />
-                <p className="text-sm">Map integration placeholder</p>
-                <p className="text-xs mt-1">
-                  Lat: {userLocation.lat}, Long: {userLocation.long}
-                </p>
-              </div>
-            </div>
+           
           </div>
 
           <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
