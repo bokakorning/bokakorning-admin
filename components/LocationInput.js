@@ -33,7 +33,7 @@ export default function Locationinput({ userDetail, setUserDetail }) {
       inputRef.current,
       {
         types: ["geocode"],
-        componentRestrictions: { country: "in" },
+        componentRestrictions: { country: "se" },
       }
     );
 
