@@ -31,7 +31,7 @@ function students(props) {
   const getProduct = async (page = 1, limit = 10) => {
     props.loader(true);
     let url = `auth/getUser?type=user&page=${page}&limit=${limit}`;
-    Api("get", url, router).then(
+    Api("get", url, {}, router).then(
       (res) => {
         props.loader(false);
         const data = res.data;
@@ -98,7 +98,6 @@ function students(props) {
     );
   };
 
-
   const actionHandler = ({ row }) => {
     return (
       <div
@@ -142,7 +141,7 @@ function students(props) {
         accessor: "status",
         Cell: Status,
       },
-  
+
       {
         Header: "ACTION",
         Cell: actionHandler,
