@@ -7,12 +7,12 @@ const publicRoutes = ["/aboutus", "/privacypolicy", "/termsandconditions"];
 
 function handleAuthError(err, router) {
   if (typeof window !== "undefined") {
-    const currentPath = router.pathname.toLowerCase();
+    const currentPath = router?.pathname?.toLowerCase();
     if (!publicRoutes.includes(currentPath)) {
       console.warn("Auth error:", err?.response?.data?.message || err.message);
       localStorage.removeItem("token");
       localStorage.removeItem("userDetail");
-      router.push("/login");
+      router?.push("/login");
     }
   }
 }
@@ -22,7 +22,6 @@ function Api(method, url, data, router) {
     let token = "";
     const currentPath = typeof window !== "undefined" ? window.location.pathname.toLowerCase() : "";
 
-    // Agar public route hai → token skip
     if (!publicRoutes.includes(currentPath)) {
       token = localStorage?.getItem("token") || "";
     }
