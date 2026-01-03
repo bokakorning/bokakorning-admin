@@ -2,25 +2,15 @@ import axios from "axios";
 // const ConstantsUrl = "http://localhost:3004/";
 const ConstantsUrl = "https://api.bokakorning.online/";
 
-
 const publicRoutes = ["/aboutus", "/privacypolicy", "/termsandconditions"];
-
-function handleAuthError(err, router) {
-  if (typeof window !== "undefined") {
-    const currentPath = router?.pathname?.toLowerCase();
-    if (!publicRoutes.includes(currentPath)) {
-      console.warn("Auth error:", err?.response?.data?.message || err.message);
-      localStorage.removeItem("token");
-      localStorage.removeItem("userDetail");
-      router?.push("/login");
-    }
-  }
-}
 
 function Api(method, url, data, router) {
   return new Promise(function (resolve, reject) {
     let token = "";
-    const currentPath = typeof window !== "undefined" ? window.location.pathname.toLowerCase() : "";
+    const currentPath =
+      typeof window !== "undefined"
+        ? window.location.pathname.toLowerCase()
+        : "";
 
     if (!publicRoutes.includes(currentPath)) {
       token = localStorage?.getItem("token") || "";
@@ -30,7 +20,7 @@ function Api(method, url, data, router) {
       method,
       url: ConstantsUrl + url,
       data,
-      headers: token ? { Authorization: `jwt ${token}` } : {},
+      // headers: token ? { Authorization: `jwt ${token}` } : {},
     }).then(
       (res) => resolve(res.data),
       (err) => {
@@ -45,7 +35,9 @@ function Api(method, url, data, router) {
             msg.toLowerCase().includes("expired") ||
             msg.toLowerCase().includes("invalid token")
           ) {
-            handleAuthError(err, router);
+            localStorage.removeItem("token");
+            localStorage.removeItem("userDetail");
+            router.push("/login");
           }
 
           reject(err.response.data);
@@ -60,7 +52,10 @@ function Api(method, url, data, router) {
 function ApiFormData(method, url, data, router) {
   return new Promise(function (resolve, reject) {
     let token = "";
-    const currentPath = typeof window !== "undefined" ? window.location.pathname.toLowerCase() : "";
+    const currentPath =
+      typeof window !== "undefined"
+        ? window.location.pathname.toLowerCase()
+        : "";
 
     // Agar public route hai → token skip
     if (!publicRoutes.includes(currentPath)) {
@@ -89,7 +84,9 @@ function ApiFormData(method, url, data, router) {
             msg.toLowerCase().includes("expired") ||
             msg.toLowerCase().includes("invalid token")
           ) {
-            handleAuthError(err, router);
+            localStorage.removeItem("token");
+            localStorage.removeItem("userDetail");
+            router?.push("/login");
           }
 
           reject(err.response.data);
