@@ -20,7 +20,7 @@ function Api(method, url, data, router) {
       method,
       url: ConstantsUrl + url,
       data,
-      // headers: token ? { Authorization: `jwt ${token}` } : {},
+      headers: token ? { Authorization: `jwt ${token}` } : {},
     }).then(
       (res) => resolve(res.data),
       (err) => {
