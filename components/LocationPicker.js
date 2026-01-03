@@ -43,7 +43,7 @@ export default function LocationPicker({
     autoCompleteRef.current =
       new window.google.maps.places.Autocomplete(inputRef.current, {
         types: ["geocode"],
-        componentRestrictions: { country: "in" },
+        // componentRestrictions: { country: "in" },
       });
 
     autoCompleteRef.current.addListener("place_changed", () => {
