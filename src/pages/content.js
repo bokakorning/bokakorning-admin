@@ -29,11 +29,20 @@ const editorConfig = {
 };
 
 function ContentManagement(props) {
-    const [contentData, setContentData] = useState({
-        termsAndConditions: '',
-        privacy: '',
-        id: ''
-    });
+
+const [selectedLanguage, setSelectedLanguage] = useState('en');
+
+const [contentData, setContentData] = useState({
+  privacyPolicy: {
+    en: { content: '', id: '' },
+    sv: { content: '', id: '' },
+  },
+  termsAndConditions: {
+    en: { content: '', id: '' },
+    sv: { content: '', id: '' },
+  },
+});
+
 
     const [user] = useContext(userContext);
     const router = useRouter();
@@ -47,14 +56,18 @@ function ContentManagement(props) {
         Api("get", "content/getContent", router).then(
             (res) => {
                 props.loader(false);
-                if (res?.status && res?.data[0]) {
-                    const data = res.data[0];
-                    setContentData({
-                        termsAndConditions: data.termsAndConditions || '',
-                        privacy: data.privacy || '',
-                        id: data._id || ''
-                    });
-                } else {
+                if (res?.status && res?.data?.length) {
+        const updated = { ...contentData };
+
+        res.data.forEach(item => {
+          updated[item?.type][item?.language] = {
+            content: item.content,
+            id: item._id,
+          };
+        });
+
+        setContentData(updated);
+      } else {
                     toast.error(res?.data?.message || "Failed to fetch content");
                 }
             },
@@ -65,10 +78,10 @@ function ContentManagement(props) {
         );
     };
 
-    const updateContent = (field, apiField, confirmText) => {
+    const updateContent = (type,name) => {
         Swal.fire({
             title: "Are you sure?",
-            text: confirmText,
+            text: "You want to update it!",
             showCancelButton: true,
             confirmButtonColor: "#4EB0CF",
             cancelButtonColor: "#4EB0CF",
@@ -76,10 +89,15 @@ function ContentManagement(props) {
         }).then((result) => {
             if (result.isConfirmed) {
                 props.loader(true);
-                const payload = {
-                    [apiField]: contentData[field],
-                    id: contentData.id
-                };
+                const data = contentData[type][selectedLanguage];
+console.log("Updating content:", data);
+  const payload = {
+    id: data.id,
+    type,
+    name,
+    language: selectedLanguage,
+    content: data.content,
+  };
 
                 Api("post", "content/updateContent", payload, router).then(
                     (res) => {
@@ -96,25 +114,18 @@ function ContentManagement(props) {
         });
     };
 
-    const handleContentChange = (field, value) => {
-        setContentData(prev => ({ ...prev, [field]: value }));
-    };
-
-    const contentConfigs = [
-        {
-            title: "Terms & Conditions",
-            field: "termsAndConditions",
-            apiField: "termsAndConditions",
-            confirmText: "You want to update Terms & Conditions!"
-        },
-        {
-            title: "Privacy Policy",
-            field: "privacy",
-            apiField: "privacy",
-            confirmText: "You want to update Privacy Policy!"
-        },
-
-    ];
+   const handleContentChange = (type, value) => {
+  setContentData(prev => ({
+    ...prev,
+    [type]: {
+      ...prev[type],
+      [selectedLanguage]: {
+        ...prev[type][selectedLanguage],
+        content: value,
+      },
+    },
+  }));
+};
 
     return (
         <div className="w-full mx-auto p-4 bg-gray-50">
@@ -132,23 +143,40 @@ function ContentManagement(props) {
                         <div className="flex items-center gap-3">
                             <button
                                 className={`py-2 px-6 rounded-lg transition-all duration-300 font-medium bg-custom-blue text-white shadow-lg shadow-sky-200 `}
-
                             >
                                 Content Management
                             </button>
                         </div>
                     </div>
                 </div>
-                {contentConfigs.map((config, index) => (
+                <div className="flex gap-3 mb-4 justify-end w-full">
+  {['en', 'sv'].map(lang => (
+    <button
+      key={lang}
+      onClick={() => setSelectedLanguage(lang)}
+      className={`px-4 py-2 rounded ${
+        selectedLanguage === lang
+          ? 'bg-custom-blue text-white'
+          : 'bg-gray-200 text-black'
+      }`}
+    >
+      {lang === 'en' ? 'English' : 'Swedish'}
+    </button>
+  ))}
+</div>
+
                     <ContentSection
-                        key={config.field}
-                        title={config.title}
-                        value={contentData[config.field]}
-                        onChange={(newContent) => handleContentChange(config.field, newContent)}
-                        onSubmit={() => updateContent(config.field, config.apiField, config.confirmText)}
-                        isLast={index === contentConfigs.length - 1}
-                    />
-                ))}
+                    title={`Privacy Policy (${selectedLanguage.toUpperCase()})`}
+                    value={contentData.privacyPolicy[selectedLanguage].content}
+                    onChange={(val) => handleContentChange('privacyPolicy', val)}
+                    onSubmit={() => updateContent('privacyPolicy', 'Privacy Policy')}
+                  />
+                    <ContentSection
+                    title={`Terms & Conditions (${selectedLanguage.toUpperCase()})`}
+                    value={contentData.termsAndConditions[selectedLanguage].content}
+                    onChange={(val) => handleContentChange('termsAndConditions', val)}
+                    onSubmit={() => updateContent('termsAndConditions', 'Terms & Conditions')}
+                  />
             </div>
         </div>
     );

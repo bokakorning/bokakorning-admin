@@ -8,17 +8,23 @@ import isAuth from '../../components/isAuth';
 const TermsAndConditions = () => {
   const [termsAndConditions, setTermsAndConditions] = useState('');
   const [loading, setLoading] = useState(true);
+  const [currentLanguage, setCurrentLanguage] = useState('en');
   const router = useRouter();
+  
+    const languages = [
+      { code: 'en', label: 'English', flag: '🇺🇸' },
+      { code: 'sv', label: 'Swedish', flag: '🇸🇪' },
+    ];
 
-  const getTermsAndConditions = () => {
+  const getTermsAndConditions = (lan) => {
     setLoading(true);
-    Api("get", "content/getContent", router).then(
+    Api("get", `content/getContentForUser?type=termsAndConditions&language=${lan}`, router).then(
       (res) => {
         setLoading(false);
         console.log("API Response =>", res.data);
 
         if (res?.status) {
-          setTermsAndConditions(res?.data[0]?.termsAndConditions || '');
+          setTermsAndConditions(res?.data?.content || '');
         } else {
           toast.error(res?.data?.message || "Failed to load terms and conditions");
         }
@@ -31,9 +37,28 @@ const TermsAndConditions = () => {
     );
   };
 
-  useEffect(() => {
-    getTermsAndConditions();
-  }, []);
+  const handleLanguageChange = (langCode) => {
+      setCurrentLanguage(langCode);
+      // Update URL query parameter
+      router.push(
+        {
+          pathname: router.pathname,
+          query: { ...router.query, type: langCode }
+        },
+        undefined,
+        { shallow: true }
+      );
+      getTermsAndConditions(langCode);
+    };
+  
+    useEffect(() => {
+      if (!router.isReady) return;
+      
+      const t = router.query.type || "en";
+      console.log("type", t);
+      setCurrentLanguage(t);
+      getTermsAndConditions(t);
+    }, [router.isReady]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-sky-100 to-sky-200 relative overflow-hidden">
@@ -45,6 +70,28 @@ const TermsAndConditions = () => {
         <div className="absolute -bottom-32 left-1/4 w-72 h-72 bg-gradient-to-br from-sky-400 to-sky-500 rounded-full opacity-20 blur-3xl animate-pulse delay-2000"></div>
       </div>
 
+<div className="inline-flex items-center bg-gray-200 rounded-full p-1 shadow-md flex absolute top-4 right-4 sm:top-6 sm:right-6 z-20">
+            {languages.map((lang) => (
+              <button
+                key={lang.code}
+                onClick={() => handleLanguageChange(lang.code)}
+                className={`
+                  relative px-6 py-2 rounded-full font-bold text-sm transition-all duration-300 ease-in-out
+                  ${currentLanguage === lang.code
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-black shadow-lg'
+                    : 'bg-transparent text-gray-600 hover:text-gray-800'
+                  }
+                `}
+                disabled={loading}
+                title={lang.code === 'en' ? 'English' : 'Swedish'}
+              >
+                <span className="relative z-10 flex items-center gap-1.5">
+                  <span className="text-xs">{lang.flag}</span>
+                  <span>{lang.label}</span>
+                </span>
+              </button>
+            ))}
+          </div>
     
       <div className="absolute top-20 left-10 opacity-10">
         <Shield className="w-24 h-24 text-sky-500 animate-bounce" style={{ animationDuration: '3s' }} />
@@ -60,13 +107,13 @@ const TermsAndConditions = () => {
         <div className="max-w-6xl mx-auto">
           
        
-          <div className="text-center mb-10">
+          <div className="text-center mb-10 mt-15">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-sky-400 to-sky-500 rounded-2xl shadow-2xl mb-6 transform hover:scale-110 transition-transform duration-300">
               <FileText className="w-10 h-10 text-white" />
             </div>
             
             <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-sky-400 via-sky-500 to-sky-500 bg-clip-text text-transparent mb-4 tracking-tight">
-              Terms and Conditions
+              {currentLanguage === 'en' ? 'Terms and Conditions' : 'Användarvillkor'}
             </h1>
             
             <div className="flex items-center justify-center space-x-2 mb-6">
@@ -80,7 +127,7 @@ const TermsAndConditions = () => {
             <div className="inline-flex items-center space-x-2 bg-white/60 backdrop-blur-md px-6 py-3 rounded-full shadow-lg border border-white/50">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               <p className="text-sm font-semibold text-gray-700">
-                Last updated: {new Date().toLocaleDateString('en-US', {
+                {currentLanguage === 'en' ? 'Last updated:' : 'Senast uppdaterad:'} {new Date().toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'
@@ -99,7 +146,7 @@ const TermsAndConditions = () => {
                     <div className="w-16 h-16 border-4 border-sky-200 rounded-full"></div>
                     <div className="w-16 h-16 border-4 border-sky-500 rounded-full border-t-transparent animate-spin absolute top-0 left-0"></div>
                   </div>
-                  <p className="mt-6 text-gray-600 font-medium">Loading terms and conditions...</p>
+                  <p className="mt-6 text-gray-600 font-medium">{currentLanguage === 'en' ? 'Loading terms and conditions...' : 'Laddar användarvillkor...'}</p>
                 </div>
               ) : (
                 <div 
@@ -121,7 +168,7 @@ const TermsAndConditions = () => {
             
             <div className="mt-8 flex items-center justify-center space-x-6 text-gray-600">
               <Shield className="w-5 h-5" />
-              <span className="text-sm font-medium">Your agreement is protected</span>
+              <span className="text-sm font-medium">{currentLanguage === 'en' ? 'Your agreement is protected' : 'Din avtal är skyddat'}</span>
               <Lock className="w-5 h-5" />
             </div>
           </div>
