@@ -343,7 +343,7 @@ const Dashboard = (props) => {
                   <div className="flex items-center space-x-3 ">
                     <div>
                       <p className="text-xs text-gray-600">
-                        {lesson?.user.name || "User"}
+                        {lesson?.user?.name || "User"}
                       </p>
                       <div className="flex items-center space-x-2">
                         {/* <span className="text-xl">{lesson.studentAvatar}</span> */}
