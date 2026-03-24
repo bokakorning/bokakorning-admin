@@ -33,8 +33,9 @@ export default function Locationinput({ userDetail, setUserDetail }) {
       inputRef.current,
       {
         types: ["geocode"],
-        componentRestrictions: { country: "se" },
-      }
+        // ❌ remove this line
+        // componentRestrictions: { country: "se" },
+      },
     );
 
     autocomplete.addListener("place_changed", () => {
@@ -44,7 +45,6 @@ export default function Locationinput({ userDetail, setUserDetail }) {
       const lat = place.geometry.location.lat();
       const lng = place.geometry.location.lng();
 
-      // UPDATE MAIN USER DETAIL HERE
       setUserDetail((prev) => ({
         ...prev,
         address: place.formatted_address,
