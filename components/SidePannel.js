@@ -5,7 +5,7 @@ import { MdDashboard } from "react-icons/md";
 import { ImCross } from "react-icons/im";
 import { userContext } from "@/pages/_app";
 import { PiSignOutFill } from "react-icons/pi";
-import { BookA, BookCheck, LayoutDashboard ,TableOfContents,UserRound , UserStar, Wallet} from "lucide-react";
+import { BookA, BookCheck, BookOpenText, LayoutDashboard ,Settings,TableOfContents,UserRound , UserStar, Wallet} from "lucide-react";
 import Swal from "sweetalert2";
 import { FaUserTie } from "react-icons/fa";
 
@@ -62,6 +62,18 @@ const SidePannel = ({ setOpenTab, openTab }) => {
       href: "/content",
       title: "Content",
       img: <TableOfContents className="text-2xl" />,
+      access: ["admin"],
+    },
+     {
+      href: "/course",
+      title: "Courses",
+      img: <BookOpenText className="text-2xl" />,
+      access: ["admin"],
+    },
+     {
+      href: "/setting",
+      title: "Setting",
+      img: <Settings className="text-2xl" />,
       access: ["admin"],
     },
     
