@@ -34,7 +34,7 @@ function instructors(props) {
       (res) => {
         props.loader(false);
         setRatePerHour(res?.data?.per_hour_hour);
-        setCourseVat(res?.data?.course_vat ?? "");
+        // setCourseVat(res?.data?.course_vat ?? "");
         setsettingId(res?.data?._id);
       },
       (err) => {
@@ -322,7 +322,7 @@ function instructors(props) {
           </div>
         </div>
 
-      <div className="mt-8">
+      {/* <div className="mt-8">
         <div className="text-lg font-semibold text-gray-900 cursor-pointer mb-[10px]">
           Course VAT (%)
         </div>
@@ -351,7 +351,7 @@ function instructors(props) {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="mt-8">
         <div className="text-lg font-semibold text-gray-900 mb-[10px]">
@@ -439,7 +439,7 @@ function instructors(props) {
 
       <div className="mt-8">
         <div className="text-lg font-semibold text-gray-900 mb-[10px]">
-          Course Types
+          Course
         </div>
         <div className="flex flex-col gap-2 mb-4">
           <div className="flex gap-2">

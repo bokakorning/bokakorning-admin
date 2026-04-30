@@ -72,7 +72,7 @@ const SidePannel = ({ setOpenTab, openTab }) => {
     },
      {
       href: "/setting",
-      title: "Setting",
+      title: "Settings",
       img: <Settings className="text-2xl" />,
       access: ["admin"],
     },
