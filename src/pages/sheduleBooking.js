@@ -222,20 +222,19 @@ function sheduleBooking(props) {
     [themeData]
   );
 
-  console.log(open);
   return (
     <div className="w-full h-full bg-transparent mt-5  md:px-8 px-4">
       <div className=" h-full">
      
           <p className="text-black font-bold md:text-[46px] text-2xl cursor-pointer">
-            Shedule Booking
+            Schedule Booking
           </p>
          
         <div className="bg-white md:pb-32 px-1 rounded-[12px] h-full overflow-y-scroll scrollbar-hide overflow-scroll pb-28 mt-3">
           <div className="bg-[#CFE0E54D] px-4 min-h-screen rounded-[24px]">
             <p className="text-black text-[20px] pt-4">
               {" "}
-              Shedule Booking Details
+              Schedule Booking Details
             </p>
             <div className="-mt-4">
               {instructorList.length > 0 ? (

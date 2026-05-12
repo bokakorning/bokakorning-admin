@@ -30,7 +30,7 @@ const SidePannel = ({ setOpenTab, openTab }) => {
    
     {
       href: "/sheduleBooking",
-      title: "Shedule Booking",
+      title: "Schedule Booking",
       img: <BookA className="text-3xl" />,
       access: ["admin"],
     },
