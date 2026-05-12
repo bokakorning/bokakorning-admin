@@ -41,19 +41,23 @@ function sheduleBooking(props) {
 
   const getProduct = async (page = 1, limit = 10) => {
     props.loader(true);
-    let url = `booking/getschedulebookings`;
+    let url = `booking/getschedulebookings?page=${page}&limit=${limit}`;
     Api("get", url, router).then(
       (res) => {
         props.loader(false);
         console.log("abcd", res?.data);
         setInstructorList(res.data);
-        setPagination(res?.pagination);
+        setPagination({
+          totalPages: res.data.length,
+          currentPage: 1,
+          itemsPerPage: 10,
+        });
       },
       (err) => {
         props.loader(false);
         console.log(err);
         toast.error(err?.message || "Something went Wrong");
-      }
+      },
     );
   };
 
@@ -70,7 +74,7 @@ function sheduleBooking(props) {
         props.loader(false);
         console.log(err);
         toast.error(err?.message || "Something went Wrong");
-      }
+      },
     );
   };
 
@@ -96,7 +100,7 @@ function sheduleBooking(props) {
         props.loader(false);
         console.log(err);
         toast.error(err?.message || "Something went Wrong");
-      }
+      },
     );
   };
 
@@ -219,17 +223,16 @@ function sheduleBooking(props) {
         Cell: actionHandler,
       },
     ],
-    [themeData]
+    [themeData],
   );
 
   return (
     <div className="w-full h-full bg-transparent mt-5  md:px-8 px-4">
       <div className=" h-full">
-     
-          <p className="text-black font-bold md:text-[46px] text-2xl cursor-pointer">
-            Schedule Booking
-          </p>
-         
+        <p className="text-black font-bold md:text-[46px] text-2xl cursor-pointer">
+          Schedule Booking
+        </p>
+
         <div className="bg-white md:pb-32 px-1 rounded-[12px] h-full overflow-y-scroll scrollbar-hide overflow-scroll pb-28 mt-3">
           <div className="bg-[#CFE0E54D] px-4 min-h-screen rounded-[24px]">
             <p className="text-black text-[20px] pt-4">
@@ -360,9 +363,9 @@ function sheduleBooking(props) {
                       </span>
                       <span className="text-gray-600">
                         {`${moment(popupData.sheduleDate).format(
-                          "DD/MM/YYYY"
+                          "DD/MM/YYYY",
                         )} ${moment(popupData.selectedTime, "HH:mm").format(
-                          "hh:mm A"
+                          "hh:mm A",
                         )}`}
                       </span>
                     </div>
@@ -402,7 +405,7 @@ function sheduleBooking(props) {
                       <span className="text-gray-600">
                         {popupData?.user?.createdAt
                           ? moment(popupData?.user?.createdAt).format(
-                              "DD/MM/YYYY"
+                              "DD/MM/YYYY",
                             )
                           : ""}
                       </span>

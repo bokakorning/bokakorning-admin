@@ -148,6 +148,13 @@ export default function AddUser(props) {
       return;
     }
 
+    if (type === "user") {
+      if (!document) {
+        toast.error("Please Add Driving Permit Document");
+        return;
+      }
+    }
+
     if (
       userDetail.location.coordinates[0] ||
       userDetail.location.coordinates[1]
