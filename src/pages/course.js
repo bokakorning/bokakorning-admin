@@ -129,7 +129,7 @@ function Course(props) {
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const res = await fetch("http://localhost:3000/courses/uploadMedia", {
+      const res = await fetch("https://api.bokakorning.online/courses/uploadMedia", {
         method: "POST",
         headers: token ? { Authorization: `jwt ${token}` } : {},
         body: formData,
