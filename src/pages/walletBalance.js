@@ -52,30 +52,6 @@ function instructors(props) {
       }
     );
   };
-  const updateRatePerHour = async () => {
-    props.loader(true);
-    const body={
-      per_hour_hour:ratePerHour
-    }
-    let url = `setting/createSetting`;
-    if (settingId) {
-     url = `setting/updateSetting`;
-     body.id=settingId
-    }
-    Api("post", url,body, router).then(
-      (res) => {
-        props.loader(false);
-        console.log("abcd", res);
-          getRatePerHour()
-          toast.success("Rate Update succesfully");
-      },
-      (err) => {
-        props.loader(false);
-        console.log(err);
-        toast.error(err?.message || "Something went Wrong");
-      }
-    );
-  };
   const getProduct = async () => {
     props.loader(true);
     let url = `auth/getInstructersBalence`;
@@ -236,35 +212,6 @@ function instructors(props) {
   return (
     <div className="w-full h-full bg-transparent mt-5  md:px-8 px-4">
       <div className=" h-full">
-        <div>
-                <div className="text-lg font-semibold text-gray-900 cursor-pointer mb-[10px]">
-                        Instructer Rate Per Hour
-                      </div>
-                      <div className="flex flex-row">
-              <div className="border border-gray-200 rounded-xl p-1 hover:border-green-300 transition-colors w-full flex items-center">
-                <div className="flex items-center justify-center w-full">
-                  <input
-                  type="number"
-                  name="rate"
-                  value={ratePerHour}
-                  placeholder="Rate Per Hour"
-                  required
-                    onChange={(e) => setRatePerHour(e.target.value)}
-                    className="w-full h-5 text-black outline-none rounded "
-                  />
-                </div>
-              </div>
-              <div className="flex justify-center w-100">
-                <button
-                  className="flex items-center px-8 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-                onClick={()=>updateRatePerHour()}
-                >
-                  <Save className="w-5 h-5 mr-2" />
-                  Update Rate Per Hour
-                </button>
-              </div>
-              </div>
-           </div>
 
         <p className="text-black font-bold md:text-[46px] text-2xl cursor-pointer">
           <span className="w-2 h-8 bg-[#F38529] rounded "></span>
