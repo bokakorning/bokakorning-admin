@@ -44,45 +44,33 @@ function instructors(props) {
         props.loader(false);
         console.log(err);
         toast.error(err?.message || "Something went Wrong");
-      }
+      },
     );
   };
 
-  const students = [
-    {
-      studentId: "IN-502",
-      name: "Jonas",
-      email: "jonas@email.com",
-      phone: "+46 73 123 45 67",
-      CreatedAt: "12th, August 2025",
-      Document: "✅",
-      Availability: "Online",
-      TotalLessons: 15,
-      Completed: 12,
-      Upcoming: "20 Aug, 14:00",
-      Rating: "★★★★★",
-    },
-    {
-      studentId: "IN-503",
-      name: "Ron",
-      email: "ron@email.com",
-      phone: "+46 12 562 23 97",
-      CreatedAt: "9th, August 2025",
-      Document: "✅",
-      Availability: "Offline",
-      TotalLessons: 8,
-      Completed: 5,
-      Upcoming: "20 Aug, 12:00",
-      Rating: "★★★★★",
-    },
-  ];
+  // Status change function
+  const changeStatus = async (user_id, status) => {
+    try {
+      const response = await Api("post", "auth/updateProfile", {
+        user_id,
+        status,
+      });
 
-  const StudentId = ({ value }) => {
-    return (
-      <div className="p-4 flex flex-col items-center justify-center">
-        <p className="text-black text-base font-normal">{value || "N/A"}</p>
-      </div>
-    );
+      if (response?.status) {
+        toast.success(`User status changed to ${status}`);
+        setInstructorList((prevInstructors) =>
+          prevInstructors.map((instructor) =>
+            instructor._id === user_id ? { ...instructor, status } : instructor,
+          ),
+        );
+        getProduct(currentPage);
+      } else {
+        toast.error(response?.message || "Failed to update status");
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+      toast.error("Something went wrong");
+    }
   };
 
   const StudentName = ({ value }) => {
@@ -136,22 +124,6 @@ function instructors(props) {
     </div>
   );
 
-  const TotalLessons = ({ value }) => {
-    return (
-      <div className="p-4 flex flex-col items-center justify-center">
-        <p className="text-black text-base font-normal">{value}</p>
-      </div>
-    );
-  };
-
-  const Completed = ({ value }) => {
-    return (
-      <div className="p-4 flex flex-col items-center justify-center">
-        <p className="text-black text-base font-normal">{value}</p>
-      </div>
-    );
-  };
-
   const RatePerHour = ({ row }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [rate, setRate] = useState(row?.original?.rate_per_hour || "");
@@ -162,7 +134,7 @@ function instructors(props) {
           "post",
           "auth/updateInstRate",
           { instructer_id: row?.original?._id, rate_per_hour: rate },
-          router
+          router,
         );
 
         if (res?.status) {
@@ -333,7 +305,7 @@ function instructors(props) {
         Cell: actionHandler,
       },
     ],
-    [themeData]
+    [themeData],
   );
 
   console.log(open);
@@ -344,14 +316,14 @@ function instructors(props) {
           <p className="text-black font-bold md:text-[46px] text-2xl cursor-pointer">
             Instructor
           </p>
-            <button
-              className="flex justify-center items-center gap-1 text-sm text-white
+          <button
+            className="flex justify-center items-center gap-1 text-sm text-white
              bg-custom-blue px-3 py-3 rounded-xl cursor-pointer"
-              onClick={() => router.push("/AddUser?type=instructer")}
-            >
-              <PlusIcon size={18} />
-              Add Instruter
-            </button>
+            onClick={() => router.push("/AddUser?type=instructer")}
+          >
+            <PlusIcon size={18} />
+            Add Instruter
+          </button>
         </div>
 
         <div className="bg-white md:pb-22 px-1 rounded-[12px] h-full overflow-y-scroll scrollbar-hide overflow-scroll pb-14 mt-3">
@@ -402,17 +374,52 @@ function instructors(props) {
                       </p>
                     </div>
                   </div>
-                  {/* <div className="text-right">
-                    <p className="text-gray-600 text-sm">Date Of Birth: 01-01-1990</p>
-                  </div> */}
                 </div>
                 <p
                   onClick={() => setOpen(false)}
-                  className="text-black text-2xl absolute right-4 top-2"
+                  className="text-black text-2xl absolute right-4 top-2 cursor-pointer"
                 >
                   {" "}
                   <RxCross2 />
                 </p>
+
+                <div className="mt-2 flex items-center gap-2">
+                  {popupData.status === "Approved" && (
+                    <button
+                      onClick={() => changeStatus(popupData._id, "Rejected")}
+                      className="px-3 py-1 rounded-md text-sm font-medium transition bg-red-100 text-red-700 hover:bg-red-200"
+                    >
+                      Reject
+                    </button>
+                  )}
+
+                  {popupData.status === "Rejected" && (
+                    <button
+                      onClick={() => changeStatus(popupData._id, "Approved")}
+                      className="px-3 py-1 rounded-md text-sm font-medium transition bg-green-100 text-green-700 hover:bg-green-200"
+                    >
+                      Approve
+                    </button>
+                  )}
+
+                  {popupData.status === "Pending" && (
+                    <>
+                      <button
+                        onClick={() => changeStatus(popupData._id, "Approved")}
+                        className="px-3 py-1 rounded-md text-sm font-medium transition bg-green-100 text-green-700 hover:bg-green-200"
+                      >
+                        Approve
+                      </button>
+
+                      <button
+                        onClick={() => changeStatus(popupData._id, "Rejected")}
+                        className="px-3 py-1 rounded-md text-sm font-medium transition bg-red-100 text-red-700 hover:bg-red-200"
+                      >
+                        Reject
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
 
               <div className="p-6">

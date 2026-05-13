@@ -42,7 +42,7 @@ function students(props) {
         props.loader(false);
         console.log(err);
         toast.error(err?.message || "Something went Wrong");
-      }
+      },
     );
   };
 
@@ -147,10 +147,27 @@ function students(props) {
         Cell: actionHandler,
       },
     ],
-    [themeData]
+    [themeData],
   );
 
-  console.log(open);
+  const changeStatus = async (user_id, status) => {
+    try {
+      const response = await Api("post", "auth/updateProfile", {
+        user_id,
+        status,
+      });
+
+      if (response?.status) {
+        toast.success(`User status changed to ${status}`);
+        getProduct(currentPage);
+      } else {
+        toast.error(response?.message || "Failed to update status");
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+      toast.error("Something went wrong");
+    }
+  };
   return (
     <div className="w-full h-full bg-transparent mt-5  md:px-8 px-4">
       <div className=" h-full">
@@ -227,6 +244,43 @@ function students(props) {
                   {" "}
                   <RxCross2 />
                 </p>
+                 <div className="mt-2 flex items-center gap-2">
+                  {popupData.status === "Approved" && (
+                    <button
+                      onClick={() => changeStatus(popupData._id, "Rejected")}
+                      className="px-3 py-1 rounded-md text-sm font-medium transition bg-red-100 text-red-700 hover:bg-red-200"
+                    >
+                      Reject
+                    </button>
+                  )}
+
+                  {popupData.status === "Rejected" && (
+                    <button
+                      onClick={() => changeStatus(popupData._id, "Approved")}
+                      className="px-3 py-1 rounded-md text-sm font-medium transition bg-green-100 text-green-700 hover:bg-green-200"
+                    >
+                      Approve
+                    </button>
+                  )}
+
+                  {popupData.status === "Pending" && (
+                    <>
+                      <button
+                        onClick={() => changeStatus(popupData._id, "Approved")}
+                        className="px-3 py-1 rounded-md text-sm font-medium transition bg-green-100 text-green-700 hover:bg-green-200"
+                      >
+                        Approve
+                      </button>
+
+                      <button
+                        onClick={() => changeStatus(popupData._id, "Rejected")}
+                        className="px-3 py-1 rounded-md text-sm font-medium transition bg-red-100 text-red-700 hover:bg-red-200"
+                      >
+                        Reject
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
 
               <div className="p-6">
