@@ -394,7 +394,7 @@ function instructors(props) {
     <div className="w-full h-full bg-transparent mt-5 md:px-8 px-4">
         <div>
           <div className="text-lg font-semibold text-gray-900 cursor-pointer mb-[10px]">
-            Instructer Rate Per Hour
+            instructor Rate Per Hour
           </div>
           <div className="flex flex-row">
             <div className="border border-gray-200 rounded-xl p-1 hover:border-green-300 transition-colors w-full flex items-center">

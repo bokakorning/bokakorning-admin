@@ -40,6 +40,7 @@ export default function AddUser(props) {
 
   const [image, setImage] = useState(null);
   const [document, setDocument] = useState(null);
+  const [errors, setErrors] = useState({});
 
   const months = [
     { label: "0 Month", value: 0 },
@@ -142,6 +143,25 @@ export default function AddUser(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (errors?.phone) {
+      toast.error("Please fix the errors before submitting");
+      return;
+    }
+
+    if (type === "user") {
+      if (!document) {
+        toast.error("Please Add Driving Permit Document");
+        return;
+      }
+    }
+
+    if (
+      userDetail.location.coordinates[0] ||
+      userDetail.location.coordinates[1]
+    ) {
+      toast.error("Please select a valid location from the suggestions");
+      return;
+    }
     props.loader(true);
 
     try {
@@ -175,7 +195,7 @@ export default function AddUser(props) {
               Number(userDetail.location.coordinates[0]),
               Number(userDetail.location.coordinates[1]),
             ],
-          })
+          }),
         );
         formData.append("status", "Approved");
         formData.append("type", "instructer");
@@ -210,7 +230,6 @@ export default function AddUser(props) {
     <div className="min-h-screen px-4 py-2 pb-10">
       <div className="w-full">
         <div className="bg-white shadow rounded-2xl  overflow-hidden">
-          {/* Header */}
           <div className="bg-custom-blue md:px-8 px-4 py-6">
             <h2 className="text-2xl font-bold text-white">
               {editId ? "Edit" : "Add"}{" "}
@@ -261,14 +280,48 @@ export default function AddUser(props) {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Phone <span className="text-red-500">*</span>
                     </label>
+
                     <input
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
+                      className={`w-full px-4 py-3 border rounded-lg outline-none transition-all text-black ${
+                        errors?.phone
+                          ? "border-red-500 focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                          : "border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      }`}
                       placeholder="Enter phone number"
                       name="phone"
                       value={value.phone}
-                      onChange={(e) => updateValue("phone", e.target.value)}
+                      onChange={(e) => {
+                        const phone = e.target.value;
+
+                        // Update value
+                        updateValue("phone", phone);
+
+                        // Validation
+                        let error = "";
+
+                        if (!phone.trim()) {
+                          error = "Phone number is required";
+                        } else if (!/^[0-9]+$/.test(phone)) {
+                          error = "Only numbers are allowed";
+                        } else if (phone.length < 7 || phone.length > 15) {
+                          error =
+                            "Phone number must be between 7 and 15 digits";
+                        }
+
+                        // Update errors state
+                        setErrors((prev) => ({
+                          ...prev,
+                          phone: error,
+                        }));
+                      }}
                       required
                     />
+
+                    {errors?.phone && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.phone}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -350,16 +403,48 @@ export default function AddUser(props) {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Phone <span className="text-red-500">*</span>
                       </label>
+
                       <input
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-black"
+                        className={`w-full px-4 py-3 border rounded-lg outline-none transition-all text-black ${
+                          errors?.phone
+                            ? "border-red-500 focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                            : "border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        }`}
                         placeholder="Enter phone number"
                         name="phone"
-                        value={userDetail.phone}
-                        onChange={(e) =>
-                          updateUserValue("phone", e.target.value)
-                        }
+                        value={value.phone}
+                        onChange={(e) => {
+                          const phone = e.target.value;
+
+                          // Update value
+                          updateValue("phone", phone);
+
+                          // Validation
+                          let error = "";
+
+                          if (!phone.trim()) {
+                            error = "Phone number is required";
+                          } else if (!/^[0-9]+$/.test(phone)) {
+                            error = "Only numbers are allowed";
+                          } else if (phone.length < 7 || phone.length > 15) {
+                            error =
+                              "Phone number must be between 7 and 15 digits";
+                          }
+
+                          // Update errors state
+                          setErrors((prev) => ({
+                            ...prev,
+                            phone: error,
+                          }));
+                        }}
                         required
                       />
+
+                      {errors?.phone && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.phone}
+                        </p>
+                      )}
                     </div>
 
                     <div>

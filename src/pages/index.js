@@ -197,7 +197,7 @@ const Dashboard = (props) => {
               onClick={() => router.push("/AddUser?type=instructer")}
             >
               <PlusIcon size={18} />
-              Add Instruter
+              Add Instructor
             </button>
           </div>
         </div>

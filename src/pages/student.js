@@ -143,7 +143,7 @@ function students(props) {
       },
 
       {
-        Header: "ACTION",
+        Header: "Action",
         Cell: actionHandler,
       },
     ],

@@ -210,7 +210,7 @@ function Bookings(props) {
             onClick={() => router.push("/addShedulebooking")}
           >
             <PlusIcon size={18} />
-            Shedule Booking
+            Schedule Booking
           </button>
         </div>
         <div className="bg-white md:pb-32 px-1 rounded-[12px] h-full overflow-y-scroll scrollbar-hide overflow-scroll pb-28 mt-3">
