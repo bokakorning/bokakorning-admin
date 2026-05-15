@@ -139,8 +139,6 @@ export default function AddUser(props) {
     }));
   };
 
-  console.log(userDetail, image);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (errors?.phone) {
@@ -225,7 +223,7 @@ export default function AddUser(props) {
   };
 
   if (!pageReady) return null;
-
+  console.log("f", userDetail);
   return (
     <div className="min-h-screen px-4 py-2 pb-10">
       <div className="w-full">
@@ -294,8 +292,8 @@ export default function AddUser(props) {
                         const phone = e.target.value;
 
                         // Update value
-                        updateValue("phone", phone);
-
+                        updateValue("phone", e.target.value);
+                    
                         // Validation
                         let error = "";
 
@@ -412,14 +410,11 @@ export default function AddUser(props) {
                         }`}
                         placeholder="Enter phone number"
                         name="phone"
-                        value={value.phone}
+                        value={userDetail.phone}
                         onChange={(e) => {
                           const phone = e.target.value;
+                          updateUserValue("phone", phone);
 
-                          // Update value
-                          updateValue("phone", phone);
-
-                          // Validation
                           let error = "";
 
                           if (!phone.trim()) {
@@ -430,8 +425,6 @@ export default function AddUser(props) {
                             error =
                               "Phone number must be between 7 and 15 digits";
                           }
-
-                          // Update errors state
                           setErrors((prev) => ({
                             ...prev,
                             phone: error,
