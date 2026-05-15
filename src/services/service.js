@@ -1,6 +1,6 @@
 import axios from "axios";
-const ConstantsUrl = "http://localhost:3000/";
-// const ConstantsUrl = "https://api.bokakorning.online/";
+// const ConstantsUrl = "http://localhost:3000/";
+const ConstantsUrl = "https://api.bokakorning.online/";
 
 const publicRoutes = ["/aboutus", "/privacypolicy", "/termsandconditions"];
 
