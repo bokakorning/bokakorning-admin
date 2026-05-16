@@ -152,10 +152,10 @@ export default function AddUser(props) {
         return;
       }
     }
-
+    console.log("d", userDetail.location.coordinates);
     if (
-      userDetail.location.coordinates[0] ||
-      userDetail.location.coordinates[1]
+      !userDetail.location.coordinates[0] ||
+      !userDetail.location.coordinates[1]
     ) {
       toast.error("Please select a valid location from the suggestions");
       return;
